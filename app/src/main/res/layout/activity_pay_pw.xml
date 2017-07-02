@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorGray"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="me.zhaoliufeng.mylab.PayPwView.PayPwActivity">
+
+    <me.zhaoliufeng.customviews.PayPwView.PayPwView
+        android:id="@+id/ppv1"
+        android:layout_marginTop="180dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <me.zhaoliufeng.customviews.PayPwView.PayPwView
+        android:id="@+id/ppv2"
+        app:pw_num="8"
+        app:current_rect_color="@color/colorOrange"
+        app:pw_cirle_color="@color/colorOrange"
+        app:pw_cirle_radius="10"
+        app:pw_split_line_width="1"
+        app:pw_split_line_color="@color/colorOrange"
+        app:pw_backgroundColor="@color/colorDarkOrange"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</FrameLayout>

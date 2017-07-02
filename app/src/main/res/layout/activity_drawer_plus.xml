@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="me.zhaoliufeng.mylab.DrawerPlusLayout.DrawerPlusActivity">
+
+    <me.zhaoliufeng.customviews.DrawerPlusLayout.DrawerPlusLayout
+        android:id="@+id/drawer_plus_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:background="@color/colorDarkGray"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_gravity="center"
+                android:src="@drawable/cirle_orange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:background="@color/colorWhite"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp">
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:src="@drawable/user_avater"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp" />
+                </FrameLayout>
+
+                <View
+                    android:background="@color/colorGray"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:padding="20dp"
+                        android:src="@drawable/cirle_orange"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tv1"
+                        android:text="侧拉菜单一"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:padding="20dp"
+                        android:src="@drawable/cirle_orange"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tv2"
+                        android:text="侧拉菜单二"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:padding="20dp"
+                        android:src="@drawable/cirle_orange"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tv3"
+                        android:text="侧拉菜单三"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp">
+
+                    <Button
+                        android:layout_margin="10dp"
+                        android:onClick="drawerBtnOnClick"
+                        android:text="Click"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="15dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/pull_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </me.zhaoliufeng.customviews.DrawerPlusLayout.DrawerPlusLayout>
+
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="me.zhaoliufeng.mylab.MainActivity">
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="numTextViewOnClick"
+       android:text="数字增长控件"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="itemMaskOnClick"
+       android:text="视图遮罩凸显控件"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="drawerPlusOnClick"
+       android:text="侧拉控件"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="bootPageOnClick"
+       android:text="方便使用的引导页"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="payPwOnClick"
+       android:text="密码输入框"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="chartOnClick"
+       android:text="柱状图"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="boardOnClick"
+       android:text="速度表"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
+
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="labOnClick"
+       android:text="Lab实验室"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+</LinearLayout>

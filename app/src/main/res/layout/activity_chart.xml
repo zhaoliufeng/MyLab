@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorGray"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="me.zhaoliufeng.mylab.Chart.ChartActivity">
+
+    <me.zhaoliufeng.customviews.Chart.LineChart
+        android:id="@+id/lineChart"
+        app:linechart_data_color="@color/colorGreen"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+    <me.zhaoliufeng.customviews.Chart.Histogram
+        android:id="@+id/histogram"
+        app:histogram_color="@color/colorGreen"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+</FrameLayout>

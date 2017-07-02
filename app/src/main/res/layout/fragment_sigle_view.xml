@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <View
+            android:id="@+id/view_top"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_width="150dp"
+            android:layout_height="200dp"/>
+
+        <View
+            android:id="@+id/view_down"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="160dp"
+            android:layout_marginStart="160dp"
+            android:layout_width="150dp"
+            android:layout_height="200dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_small"
+        android:layout_gravity="right"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+
+    <me.zhaoliufeng.customviews.ItemMask.ItemMask
+        android:id="@+id/itemMask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

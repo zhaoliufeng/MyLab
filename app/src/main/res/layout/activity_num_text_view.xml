@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <EditText
+            android:gravity="center"
+            android:inputType="number"
+            android:id="@+id/edt_int_min"
+            android:textSize="20sp"
+            android:hint="Min"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"/>
+
+        <EditText
+            android:gravity="center"
+            android:inputType="number"
+            android:id="@+id/edt_int_max"
+            android:textSize="20sp"
+            android:hint="Max"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp" />
+
+        <me.zhaoliufeng.customviews.NumTexView.NumTextView
+            android:id="@+id/numtv_int"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="22dp"
+            android:layout_marginStart="22dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:onClick="integerOnClick"
+        android:text="整型增长"
+        android:id="@+id/btn_int"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <EditText
+            android:gravity="center"
+            android:inputType="number"
+            android:id="@+id/edt_decimal_min"
+            android:textSize="20sp"
+            android:hint="Min"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"/>
+
+        <EditText
+            android:gravity="center"
+            android:inputType="number"
+            android:id="@+id/edt_decimal_max"
+            android:textSize="20sp"
+            android:hint="Max"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp" />
+
+        <me.zhaoliufeng.customviews.NumTexView.NumTextView
+            android:id="@+id/numtv_decimal"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="22dp"
+            android:layout_marginStart="22dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:onClick="decimalOnClick"
+        android:text="整型增长"
+        android:id="@+id/btn_decimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"/>
+
+</LinearLayout>

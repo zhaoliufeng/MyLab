@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrawerPlusLayout">
+        <attr name="leftMenuOffsetDistance" format="dimension"/><!--抽屉偏移量-->
+        <attr name="leftMenuWidthScale" format="float"/><!--抽屉菜单的百分比-->
+        <attr name="leftMenuTopOffsetDistance" format="dimension"/><!--菜单顶部向下偏移量-->
+    </declare-styleable>
+
+    <declare-styleable name="BootPage">
+        <attr name="indicator_roundCircleColor" format="color"/>
+        <attr name="indicator_centralCircleNormalColor" format="color"/>
+        <attr name="indicator_currentCircleColor" format="color"/>
+        <attr name="centralCircleRadius" format="float"/>
+        <attr name="roundCircleRadius" format="float"/>
+        <attr name="interval" format="float"/>
+        <attr name="displayIndicator" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="PayPwView">
+        <attr name="pw_num" format="integer"/>
+        <attr name="current_rect_color" format="color"/>
+        <attr name="pw_cirle_color" format="color"/>
+        <attr name="pw_cirle_radius" format="integer"/>
+        <attr name="pw_split_line_width" format="integer"/>
+        <attr name="pw_split_line_color" format="color"/>
+        <attr name="pw_backgroundColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="LineChart">
+        <attr name="linechart_animation_speed" format="integer"/>
+        <attr name="linechart_data_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="Histogram">
+        <attr name="histogramWidth" format="float"/><!--柱状图线宽 默认30-->
+        <attr name="histogramSpetaWidth" format="float"/><!--柱状图线间距 默认30-->
+        <attr name="histogramWordSpeta" format="float"/><!--字间距 默认30-->
+        <attr name="histogramRightMoveSpeta" format="float"/><!--右移距离 默认50-->
+        <attr name="histogram_animation_speed" format="integer"><!--动画速度 默认mid-->
+            <flag name="fast" value="10"/>
+            <flag name="mid" value="20"/>
+            <flag name="slow" value="50"/>
+        </attr>
+        <attr name="histogram_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="DashboardView">
+        <attr name="DashBoardViewStyle" format="integer"/><!--车辆速度码表样式 大 小-->
+    </declare-styleable>
+</resources>

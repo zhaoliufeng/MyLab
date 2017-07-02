@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="me.zhaoliufeng.mylab.lab.ViewLocationActivity">
+
+    <View
+        android:background="@color/colorPrimary"
+        android:id="@+id/view1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+
+    <LinearLayout
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginTop="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+        <View
+            android:id="@+id/view2"
+            android:background="@color/colorAccent"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="350dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/tv_window"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+        <TextView
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/tv_screen"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+</FrameLayout>
