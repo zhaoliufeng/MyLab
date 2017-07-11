@@ -56,6 +56,19 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content" />
 
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="switchOnClick"
+       android:text="开关按钮"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+   <Button
+       android:layout_margin="5dp"
+       android:onClick="colorOnClick"
+       android:text="颜色轮盘"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
+
 
    <Button
        android:layout_margin="5dp"

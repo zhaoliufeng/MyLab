@@ -56,4 +56,12 @@ public class MainActivity extends AppCompatActivity {
     public void boardOnClick(View view) {
         startActivity(new Intent(this, DashBoardActivity.class));
     }
+
+    public void switchOnClick(View view) {
+        startActivity(new Intent(this, SwitchButtonActivity.class));
+    }
+
+    public void colorOnClick(View view) {
+        startActivity(new Intent(this, ColorPickerActivity.class));
+    }
 }
