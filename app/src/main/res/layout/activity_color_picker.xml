@@ -8,7 +8,60 @@
     tools:context="me.zhaoliufeng.mylab.ColorPickerActivity">
 
     <me.zhaoliufeng.customviews.ColorPicker
+        android:id="@+id/colorPicker"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_marginTop="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:text="0"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:hint="R"
+            android:id="@+id/edtR"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:text="12"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:hint="G"
+            android:id="@+id/edtG"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:text="200"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:hint="B"
+            android:id="@+id/edtB"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_marginTop="350dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:onClick="onClick"
+            android:text="OK"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="100dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"/>
 
 </FrameLayout>
