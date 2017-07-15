@@ -64,4 +64,8 @@ public class MainActivity extends AppCompatActivity {
     public void colorOnClick(View view) {
         startActivity(new Intent(this, ColorPickerActivity.class));
     }
+
+    public void seekOnClick(View view) {
+        startActivity(new Intent(this, SeekBarActivity.class));
+    }
 }

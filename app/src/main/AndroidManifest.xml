@@ -26,7 +26,8 @@
         <activity android:name=".lab.ViewDrawApiActivity" />
         <activity android:name=".DashBoardView.DashBoardActivity" />
         <activity android:name=".SwitchButtonActivity" />
-        <activity android:name=".ColorPickerActivity"></activity>
+        <activity android:name=".ColorPickerActivity" />
+        <activity android:name=".SeekBarActivity"></activity>
     </application>
 
 </manifest>
