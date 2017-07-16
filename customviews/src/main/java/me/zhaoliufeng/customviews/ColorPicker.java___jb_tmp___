@@ -154,6 +154,7 @@ public class ColorPicker extends View implements View.OnTouchListener {
             float unit = (p + 4)/6;
 
             unit = (float) Math.toRadians(unit * 360);
+
             float x = (float) Math.sin(unit) * getHeight();
             float y = (float) Math.cos(unit) * getHeight();
             Log.i("COLOR", "unit " + x + " " + y);
