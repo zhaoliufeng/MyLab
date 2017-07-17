@@ -18,30 +18,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:text="255"
+            android:inputType="number"
+            android:text="0"
             android:layout_marginLeft="10dp"
             android:gravity="center"
             android:hint="R"
             android:id="@+id/edtR"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content" />
 
         <EditText
+            android:inputType="number"
             android:text="0"
             android:layout_marginLeft="10dp"
             android:gravity="center"
             android:hint="G"
             android:id="@+id/edtG"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:text="66"
+            android:inputType="number"
+            android:text="0"
             android:layout_marginLeft="10dp"
             android:gravity="center"
             android:hint="B"
             android:id="@+id/edtB"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
 

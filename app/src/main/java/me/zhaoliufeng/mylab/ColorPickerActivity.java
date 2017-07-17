@@ -1,5 +1,6 @@
 package me.zhaoliufeng.mylab;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,9 @@ public class ColorPickerActivity extends AppCompatActivity {
             public void colorChange(int rgbColor) {
                 Log.e("RGB", Integer.toHexString(rgbColor) + "");
                 view.setBackgroundColor(rgbColor);
+                edtR.setText(String.valueOf(Color.red(rgbColor)));
+                edtG.setText(String.valueOf(Color.green(rgbColor)));
+                edtB.setText(String.valueOf(Color.blue(rgbColor)));
             }
         });
 

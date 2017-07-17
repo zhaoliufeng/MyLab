@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import me.zhaoliufeng.toolslib.ToastUtils;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -77,11 +79,6 @@ public class ColorPicker extends View implements View.OnTouchListener {
         //绘制指示圆
        drawCircle(canvas);
 
-        if (drawArc){
-            RectF oval = new RectF( 0, 0, getWidth(), getHeight());
-            canvas.drawArc(oval, 180, (int)(360 * 0.7f),true,  mCirclePaint);
-        }
-
     }
 
 
@@ -129,41 +126,114 @@ public class ColorPicker extends View implements View.OnTouchListener {
      * @param g 绿
      * @param b 蓝
      */
-    public void setColor(final int a, final int r, final int g, final int b){
-        // FF XX 00
+    public void setColor(final int a, int r, int g, int b){
+        //重新给rgb赋值 赋予能够在色盘显示的颜色
+        int tempR = r;
+        int tempG = g;
+        int tempB = b;
+        if (r > tempG && r > tempB)
+            r = 255;
+        if (r < tempG && r < tempB)
+            r = 0;
+        if (g > tempR && g > tempB)
+            g = 255;
+        if (g < tempR && g < tempB)
+            g = 0;
+        if (b > tempR && b > tempG)
+            b = 255;
+        if (b < tempR && b < tempG)
+            b = 0;
+
+        // FF XX 00 右下
         if (r == 255 && b == 0){
-            Log.i("COLOR", "3. setColor: " + g/255f + " i " + 0);
+            //取得当前g值的比值 green 值比 255
+            float p = g/255f;
+            //象限内角度 unit
+            p = (float) Math.toRadians(p * 60);
+            //使用勾股计算偏移的距离
+            float x = (float) Math.cos(p) * getHeight()/2;
+            float y = (float) Math.sin(p) * getHeight()/2;
+            Log.i("COLOR", "1 x " + x + " y " + y + "\n");
+            //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
+            int tX = (int) (getWidth()/2f + x);
+            int ty = (int) (getHeight()/2f + y);
+            mCirclePoint.set(tX, (ty));
         }
-        // XX FF 00
+        // XX FF 00 中下
         if (g == 255 && b == 0){
-            Log.i("COLOR", "2. setColor: " + r/255f + " i " + 1);
+            //取得当前g值的比值 green 值比 255
+            float p = r/255f;
+            //象限内角度 unit
+            p = (float) Math.toRadians((p+1) * 60);
+            //使用勾股计算偏移的距离
+            float x = (float) Math.cos(p) * getHeight()/2;
+            float y = (float) Math.sin(p) * getHeight()/2;
+            Log.i("COLOR", "2 x " + x + " y " + y + "\n");
+            //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
+            int tX = (int) (getWidth()/2f - x);
+            int ty = (int) (getHeight()/2f + y);
+            mCirclePoint.set(tX, (ty));
         }
-        // 00 FF XX
+        // 00 FF XX 左下
         if (r == 0 && g == 255){
-            Log.i("COLOR", "4. setColor: " + b/255f + " i " + 2);
-        }
-        // XX 00 FF
-        if (g == 0 && b == 255){
-            Log.i("COLOR", "5. setColor: " + r/255f + " i " + 3);
-        }
-        // FF 00 XX
-        if (r == 255 && g == 0){
+            //取得当前g值的比值 green 值比 255
             float p = b/255f;
-            Log.i("COLOR", "6. setColor: " + p + " i " + 4);
-
-            float unit = (p + 4)/6;
-
-            unit = (float) Math.toRadians(unit * 360);
-            float x = (float) Math.sin(unit) * getHeight();
-            float y = (float) Math.cos(unit) * getHeight();
-            Log.i("COLOR", "unit " + x + " " + y);
-            drawArc = true;
-
+            //象限内角度 unit
+            p = (float)(Math.toRadians(60) - Math.toRadians(p * 60));
+            //使用勾股计算偏移的距离
+            float x = (float) Math.cos(p) * getHeight()/2;
+            float y = (float) Math.sin(p) * getHeight()/2;
+            //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
+            int tX = (int) (getWidth()/2f - x);
+            int ty = (int) (getHeight()/2f + y);
+            mCirclePoint.set(tX, (ty));
         }
-        //FF XX 00
-        if (r == 255 && b == 0){
-            Log.i("COLOR", "7. setColor: " + g/255f + " i " + 5);
+        //00 XX FF 左上
+        if (r == 0 && b == 255){
+            //取得当前g值的比值 green 值比 255
+            float p = g/255f;
+            //象限内角度 unit
+            p = (float)(Math.toRadians(60) - (float) Math.toRadians(180 - p * 60));
+            //使用勾股计算偏移的距离
+            float x = (float) Math.cos(p) * getHeight()/2;
+            float y = (float) Math.sin(p) * getHeight()/2;
+            Log.i("COLOR", "2 x " + x + " y " + y + "\n");
+            //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
+            int tX = (int) (getWidth()/2f + x);
+            int ty = (int) (getHeight()/2f - y);
+            mCirclePoint.set(tX, (ty));
         }
+        // XX 00 FF 中上
+        if (g == 0 && b == 255){
+            //取得当前g值的比值 green 值比 255
+            float p = r/255f;
+            //象限内角度 unit
+            p = (float) Math.toRadians((p + 1) * 60);
+            //使用勾股计算偏移的距离
+            float x = (float) Math.cos(p) * getHeight()/2;
+            float y = (float) Math.sin(p) * getHeight()/2;
+            Log.i("COLOR", "2 x " + x + " y " + y + "\n");
+            //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
+            int tX = (int) (getWidth()/2f - x);
+            int ty = (int) (getHeight()/2f - y);
+            mCirclePoint.set(tX, (ty));
+        }
+        // FF 00 XX 右上
+        if (r == 255 && g == 0){
+            //取得当前b值的比值 blue 值比 255
+            float p = b/255f;
+            //象限内角度 unit
+            p = (float) Math.toRadians(p * 60);
+            //使用勾股计算偏移的距离
+            float x = (float) Math.cos(p) * getHeight()/2;
+            float y = (float) Math.sin(p) * getHeight()/2;
+            Log.i("COLOR", "2 x " + x + " y " + y + "\n");
+            //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
+            int tX = (int) (getWidth()/2f + x);
+            int ty = (int) (getHeight()/2f - y);
+            mCirclePoint.set(tX, (ty));
+        }
+        postInvalidate();
     }
 
     /**
