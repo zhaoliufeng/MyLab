@@ -3,6 +3,7 @@ package me.zhaoliufeng.mylab;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import me.zhaoliufeng.customviews.LightSeekBar;
 import me.zhaoliufeng.customviews.SeekBar;
 
 public class SeekBarActivity extends AppCompatActivity {
@@ -13,5 +14,8 @@ public class SeekBarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_seekbar);
         SeekBar seekBar = (SeekBar)findViewById(R.id.seekbar);
         seekBar.setPosition(50);
+
+        LightSeekBar lightSeekBar = (LightSeekBar) findViewById(R.id.lseekbar);
+        lightSeekBar.setPosition(50);
     }
 }

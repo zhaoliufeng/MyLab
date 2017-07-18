@@ -90,17 +90,17 @@ public class SeekBar extends View {
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (event.getRawX() > mEndX + mSliderBitmap.getWidth()/2) {
+                if (event.getX() > mEndX + mSliderBitmap.getWidth()/2) {
                     mCurrX = mEndX + mSliderBitmap.getWidth()/2;
                     break;
-                }else if (event.getRawX() < mStartX ){
+                }else if (event.getX() < mStartX ){
                     mCurrX = mStartX ;
                     break;
                 }
-                mCurrX = event.getRawX();
+                mCurrX = event.getX();
                 //Log.i("X", (int)(100*(mCurrX/mEndX) - 6) + "----" );
                 if (mOnPositionChangedListener != null)
-                    mOnPositionChangedListener.onNewPosition((int)(100*(mCurrX/mEndX) - 6));
+                    mOnPositionChangedListener.onNewPosition((int)(100*(mCurrX/mEndX)));
                 postInvalidate();
                 break;
         }
@@ -138,7 +138,7 @@ public class SeekBar extends View {
             this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    mCurrX = (x + 6)/100f * mEndX;
+                    mCurrX = x/100f * mEndX;
                     postInvalidate();
                 }
             });
