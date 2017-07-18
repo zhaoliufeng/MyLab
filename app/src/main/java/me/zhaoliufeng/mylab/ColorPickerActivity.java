@@ -27,12 +27,17 @@ public class ColorPickerActivity extends AppCompatActivity {
 
         colorPicker.setColorChangeListener(new ColorPicker.ColorChangeListener() {
             @Override
-            public void colorChange(int rgbColor) {
-                Log.e("RGB", Integer.toHexString(rgbColor) + "");
-                view.setBackgroundColor(rgbColor);
-                edtR.setText(String.valueOf(Color.red(rgbColor)));
-                edtG.setText(String.valueOf(Color.green(rgbColor)));
-                edtB.setText(String.valueOf(Color.blue(rgbColor)));
+            public void colorChange(int colorVal, boolean warmMode, boolean isUp) {
+                if (!warmMode){
+                    Log.e("RGB", Integer.toHexString(colorVal) + "");
+                    view.setBackgroundColor(colorVal);
+                    edtR.setText(String.valueOf(Color.red(colorVal)));
+                    edtG.setText(String.valueOf(Color.green(colorVal)));
+                    edtB.setText(String.valueOf(Color.blue(colorVal)));
+                }else {
+                    Log.e("RGB", "warm val " + colorVal + " cold val " + (255 - colorVal));
+                }
+
             }
         });
 
@@ -42,5 +47,9 @@ public class ColorPickerActivity extends AppCompatActivity {
         colorPicker.setColor(255, Integer.valueOf(edtR.getText().toString()),
                 Integer.valueOf(edtG.getText().toString()),
                 Integer.valueOf(edtB.getText().toString()));
+    }
+
+    public void changeOnClick(View view) {
+        colorPicker.changeColorMode();
     }
 }

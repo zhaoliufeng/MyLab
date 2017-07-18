@@ -15,8 +15,8 @@ public class SwitchButtonActivity extends AppCompatActivity {
         SwitchButton switchButton = (SwitchButton) findViewById(R.id.sbtn);
         switchButton.setSelectChangeListener(new SwitchButton.SelectChangeListener() {
             @Override
-            public void onChange(boolean isOPen) {
-                ToastUtils.showToast(getBaseContext(), isOPen ? "开" : "关");
+            public void onChange(boolean isOpen) {
+                ToastUtils.showToast(getBaseContext(), isOpen ? "开" : "关");
             }
         });
     }

@@ -213,6 +213,6 @@ public class SwitchButton extends View implements View.OnTouchListener {
     }
 
     public interface SelectChangeListener{
-        void onChange(boolean isOPen);
+        void onChange(boolean isOpen);
     }
 }

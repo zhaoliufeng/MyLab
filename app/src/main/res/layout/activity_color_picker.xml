@@ -67,4 +67,12 @@
         android:layout_width="20dp"
         android:layout_height="20dp"/>
 
+    <Button
+        android:onClick="changeOnClick"
+        android:text="change"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </FrameLayout>

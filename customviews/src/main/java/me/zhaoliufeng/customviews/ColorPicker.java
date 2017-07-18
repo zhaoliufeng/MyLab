@@ -3,10 +3,9 @@ package me.zhaoliufeng.customviews;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ImageFormat;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.support.annotation.Nullable;
@@ -14,10 +13,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-import me.zhaoliufeng.toolslib.ToastUtils;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by We-Smart on 2017/7/11.
@@ -30,13 +25,16 @@ public class ColorPicker extends View implements View.OnTouchListener {
     private Point mCirclePoint;  //指示圆位置
     private int mCircleRadius;  //指示圆半径
     private Shader mSweepGradient; // 梯度渲染
-    private boolean drawArc = false;
+    private Shader mLinerGradient;  //线性渲染
     private ColorChangeListener mColorChangeListener;   //颜色改变监听
+
+    private boolean mWarmMode = false;     //色温模式 f 彩色模式 t 色温模式
 
     int[] colors =  new int[] {  0xFFFF0000, 0xFFFFFF00,
                                  0xFF00FF00, 0xFF00FFFF,
                                  0xFF0000FF, 0xFFFF00FF,
                                  0xFFFF0000}; //色环颜色值
+    int[] wColors = new int[] { 0xFFFFFFFF, 0xFFFBB41B};
 
     public ColorPicker(Context context) {
         super(context);
@@ -66,6 +64,7 @@ public class ColorPicker extends View implements View.OnTouchListener {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mSweepGradient = new SweepGradient(w/2, h/2, colors, null);
+        mLinerGradient = new LinearGradient(0, h/2, w, h/2, wColors, null, Shader.TileMode.CLAMP);
         mCirclePoint.set(w/2, h/2);
     }
 
@@ -73,12 +72,11 @@ public class ColorPicker extends View implements View.OnTouchListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         // 绘制梯度渐变
-        mPaint.setShader(mSweepGradient);
+        mPaint.setShader(mWarmMode ? mLinerGradient : mSweepGradient);
         canvas.drawRect(0, 0, getWidth(), getHeight(), mPaint);
 
         //绘制指示圆
        drawCircle(canvas);
-
     }
 
 
@@ -96,26 +94,27 @@ public class ColorPicker extends View implements View.OnTouchListener {
         float y = event.getY() - getHeight() / 2;
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                mCirclePoint.set((int)event.getX(), (int) event.getY());
-                postInvalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-                float angle = (float) Math.atan2(y, x); //获取角度 0 - 1 [0 - 360]
-                float unit = (float) (angle/ (2*Math.PI));
-                Log.e("COLOR", unit + " ");
-                if (unit < 0) {
-                    unit += 1;
-                }
-
-                mCirclePoint.set((int)event.getX(), (int) event.getY());
-                postInvalidate();
-                if (mColorChangeListener != null)
-                    mColorChangeListener.colorChange(interpRectColor(colors, unit));
-                break;
             case MotionEvent.ACTION_UP:
-
+                if (!mWarmMode){
+                    float angle = (float) Math.atan2(y, x); //获取角度 0 - 1 [0 - 360]
+                    float unit = (float) (angle/ (2*Math.PI));
+                    Log.e("COLOR", unit + " ");
+                    if (unit < 0) {
+                        unit += 1;
+                    }
+                    if (mColorChangeListener != null)
+                        mColorChangeListener.colorChange(interpRectColor(colors, unit), mWarmMode, event.getAction() == MotionEvent.ACTION_UP);
+                }else {
+                    float mVal = event.getX() / (float) getWidth() * 100;
+                    if (mColorChangeListener != null)
+                        mColorChangeListener.colorChange((int) mVal, mWarmMode, event.getAction() == MotionEvent.ACTION_UP);
+                }
                 break;
         }
+        mCirclePoint.set((int)event.getX(), (int) event.getY());
+        postInvalidate();
         return true;
     }
 
@@ -153,7 +152,6 @@ public class ColorPicker extends View implements View.OnTouchListener {
             //使用勾股计算偏移的距离
             float x = (float) Math.cos(p) * getHeight()/2;
             float y = (float) Math.sin(p) * getHeight()/2;
-            Log.i("COLOR", "1 x " + x + " y " + y + "\n");
             //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
             int tX = (int) (getWidth()/2f + x);
             int ty = (int) (getHeight()/2f + y);
@@ -164,11 +162,10 @@ public class ColorPicker extends View implements View.OnTouchListener {
             //取得当前g值的比值 green 值比 255
             float p = r/255f;
             //象限内角度 unit
-            p = (float) Math.toRadians((p+1) * 60);
+            p = (float) Math.toRadians((p + 1) * 60);
             //使用勾股计算偏移的距离
             float x = (float) Math.cos(p) * getHeight()/2;
             float y = (float) Math.sin(p) * getHeight()/2;
-            Log.i("COLOR", "2 x " + x + " y " + y + "\n");
             //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
             int tX = (int) (getWidth()/2f - x);
             int ty = (int) (getHeight()/2f + y);
@@ -193,13 +190,13 @@ public class ColorPicker extends View implements View.OnTouchListener {
             //取得当前g值的比值 green 值比 255
             float p = g/255f;
             //象限内角度 unit
-            p = (float)(Math.toRadians(60) - (float) Math.toRadians(180 - p * 60));
+            p = (float)(Math.toRadians(60) - Math.toRadians(p * 60));
             //使用勾股计算偏移的距离
             float x = (float) Math.cos(p) * getHeight()/2;
             float y = (float) Math.sin(p) * getHeight()/2;
             Log.i("COLOR", "2 x " + x + " y " + y + "\n");
             //中心的位置 减去 偏移的位置 就是坐标实际落下的位置
-            int tX = (int) (getWidth()/2f + x);
+            int tX = (int) (getWidth()/2f - x);
             int ty = (int) (getHeight()/2f - y);
             mCirclePoint.set(tX, (ty));
         }
@@ -270,12 +267,17 @@ public class ColorPicker extends View implements View.OnTouchListener {
         return c0 + Math.round(p * (c1-c0));
     }
 
+    public void changeColorMode(){
+        mWarmMode = !mWarmMode;
+        postInvalidate();
+    }
+
     public void setColorChangeListener(ColorChangeListener colorChangeListener){
         mColorChangeListener = colorChangeListener;
     }
 
     public interface ColorChangeListener{
-        void colorChange(int rgbColor);
+        void colorChange(int colorVal,boolean warmMode, boolean isUp);
     }
 
 }
