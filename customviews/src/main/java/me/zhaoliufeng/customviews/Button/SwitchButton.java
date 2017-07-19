@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -27,7 +26,7 @@ public class SwitchButton extends View implements View.OnTouchListener {
     private int mHeight;     //控件高度
     private int mCircleRadius;  //圆半径
     private String[] texts = {"OFF", "ON"};
-    private int mStatus = 0; //当前状态 1 开 0 关
+    private boolean mStatus = true; //当前状态 1 开 0 关
     private int mStartX; //起始X
     private int mEndX;  //终点X
     private int mCurrX; //当前的X坐标 初始化为起始X
@@ -102,25 +101,26 @@ public class SwitchButton extends View implements View.OnTouchListener {
         canvas.drawCircle(mCurrX, mHeight/2, mCircleRadius, circlePaint);
 
         //画字OFF
-        Rect rect = new Rect();
-        textOffPaint.getTextBounds(texts[0], 0, texts[0].length(), rect);
-        int w = rect.width();
-        int h = rect.height();
-        canvas.drawText(texts[0], mWidth - w - mCircleRadius, (mHeight + h)/2, textOffPaint);
-
-        //画字ON
-        textOffPaint.getTextBounds(texts[1], 0, texts[1].length(), rect);
-        h = rect.height();
-        canvas.drawText(texts[1], mCircleRadius, (mHeight + h)/2, textOnPaint);
+//        Rect rect = new Rect();
+//        textOffPaint.getTextBounds(texts[0], 0, texts[0].length(), rect);
+//        int w = rect.width();
+//        int h = rect.height();
+//        canvas.drawText(texts[0], mWidth - w - mCircleRadius, (mHeight + h)/2, textOffPaint);
+//
+//        //画字ON
+//        textOffPaint.getTextBounds(texts[1], 0, texts[1].length(), rect);
+//        h = rect.height();
+//        canvas.drawText(texts[1], mCircleRadius, (mHeight + h)/2, textOnPaint);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                changeButtonState();
+                mStatus = !mStatus;
+                setChecked(mStatus);
                 if (mSelectChangeListener != null){
-                    mSelectChangeListener.onChange(mStatus == 1);
+                    mSelectChangeListener.onChange(mStatus);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -133,21 +133,21 @@ public class SwitchButton extends View implements View.OnTouchListener {
         return false;
     }
 
-    private void changeButtonState(){
+    private void setChecked(boolean isChecked){
         ValueAnimator circleAnimator;
         ValueAnimator textOffAnimator;
         ValueAnimator textOnAnimator;
 
         if (isAimPaying)return;
-
-        if (mStatus == 0){
+        mStatus = isChecked;
+        if (!mStatus){
             //圆的移动
             circleAnimator = ValueAnimator.ofInt(mStartX, mEndX).setDuration(500);
 
             //文字的淡入淡出
             textOffAnimator = ValueAnimator.ofInt(255, 0).setDuration(500);
             textOnAnimator = ValueAnimator.ofInt(0, 255).setDuration(500);
-            mStatus = 1;
+            mStatus = true;
         }else {
             //圆的移动
             circleAnimator = ValueAnimator.ofInt(mEndX, mStartX).setDuration(500);
@@ -155,7 +155,7 @@ public class SwitchButton extends View implements View.OnTouchListener {
             //文字的淡入淡出
             textOffAnimator = ValueAnimator.ofInt(0, 255).setDuration(500);
             textOnAnimator = ValueAnimator.ofInt(255, 0).setDuration(500);
-            mStatus = 0;
+            mStatus = false;
         }
 
         circleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
