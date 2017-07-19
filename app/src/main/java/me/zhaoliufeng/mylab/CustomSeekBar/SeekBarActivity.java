@@ -1,10 +1,11 @@
-package me.zhaoliufeng.mylab;
+package me.zhaoliufeng.mylab.CustomSeekBar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import me.zhaoliufeng.customviews.LightSeekBar;
-import me.zhaoliufeng.customviews.SeekBar;
+import me.zhaoliufeng.customviews.CustomSeekBar.LightSeekBar;
+import me.zhaoliufeng.customviews.CustomSeekBar.SeekBar;
+import me.zhaoliufeng.mylab.R;
 
 public class SeekBarActivity extends AppCompatActivity {
 

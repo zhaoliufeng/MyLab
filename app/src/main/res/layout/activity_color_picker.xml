@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="me.zhaoliufeng.mylab.ColorPickerActivity">
+    tools:context="me.zhaoliufeng.mylab.ColorPicker.ColorPickerActivity">
 
-    <me.zhaoliufeng.customviews.ColorPicker
+    <me.zhaoliufeng.customviews.ViewColorPicker.ColorPicker
         android:id="@+id/colorPicker"
         android:layout_width="match_parent"
         android:layout_height="300dp" />

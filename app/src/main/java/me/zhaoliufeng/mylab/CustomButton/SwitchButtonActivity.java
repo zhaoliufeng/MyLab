@@ -1,9 +1,10 @@
-package me.zhaoliufeng.mylab;
+package me.zhaoliufeng.mylab.CustomButton;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import me.zhaoliufeng.customviews.SwitchButton;
+import me.zhaoliufeng.customviews.Button.SwitchButton;
+import me.zhaoliufeng.mylab.R;
 import me.zhaoliufeng.toolslib.ToastUtils;
 
 public class SwitchButtonActivity extends AppCompatActivity {

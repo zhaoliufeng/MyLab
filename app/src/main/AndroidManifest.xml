@@ -25,9 +25,11 @@
         <activity android:name=".lab.LabActivity" />
         <activity android:name=".lab.ViewDrawApiActivity" />
         <activity android:name=".DashBoardView.DashBoardActivity" />
-        <activity android:name=".SwitchButtonActivity" />
-        <activity android:name=".ColorPickerActivity" />
-        <activity android:name=".SeekBarActivity"></activity>
+        <activity android:name=".CustomButton.SwitchButtonActivity" />
+        <activity android:name=".ColorPicker.ColorPickerActivity" />
+        <activity android:name=".CustomSeekBar.SeekBarActivity" />
+        <activity android:name=".ColorPicker.RingColorPickerActivity" />
+        <activity android:name=".MulitClickActivity"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package me.zhaoliufeng.customviews;
+package me.zhaoliufeng.customviews.CustomSeekBar;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
+import me.zhaoliufeng.customviews.R;
 
 /**
  * Created by Zhao Liufeng on 2017/7/18.

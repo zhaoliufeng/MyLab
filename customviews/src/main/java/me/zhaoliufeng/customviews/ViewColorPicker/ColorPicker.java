@@ -1,4 +1,4 @@
-package me.zhaoliufeng.customviews;
+package me.zhaoliufeng.customviews.ViewColorPicker;
 
 import android.content.Context;
 import android.graphics.Canvas;

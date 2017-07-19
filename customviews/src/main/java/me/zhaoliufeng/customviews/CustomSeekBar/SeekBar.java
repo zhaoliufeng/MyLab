@@ -1,4 +1,4 @@
-package me.zhaoliufeng.customviews;
+package me.zhaoliufeng.customviews.CustomSeekBar;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
+import me.zhaoliufeng.customviews.R;
 
 /**
  * Created by We-Smart on 2017/7/14.
@@ -146,6 +148,7 @@ public class SeekBar extends View {
             Log.e("SeekBar", "传入的位置参数范围为 0 - 100");
         }
     }
+
     /**
      *  处理图片
      * @param bm 所要转换的bitmap

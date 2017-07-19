@@ -1,4 +1,4 @@
-package me.zhaoliufeng.customviews;
+package me.zhaoliufeng.customviews.Button;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -13,6 +13,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import me.zhaoliufeng.customviews.R;
 
 /**
  * Created by We-Smart on 2017/7/12.

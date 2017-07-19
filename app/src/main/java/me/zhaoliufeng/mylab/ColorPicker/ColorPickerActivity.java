@@ -1,4 +1,4 @@
-package me.zhaoliufeng.mylab;
+package me.zhaoliufeng.mylab.ColorPicker;
 
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import me.zhaoliufeng.customviews.ColorPicker;
+import me.zhaoliufeng.customviews.ViewColorPicker.ColorPicker;
+import me.zhaoliufeng.mylab.R;
 
 public class ColorPickerActivity extends AppCompatActivity {
 

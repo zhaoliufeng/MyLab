@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBrown"
-    tools:context="me.zhaoliufeng.mylab.SeekBarActivity">
+    tools:context="me.zhaoliufeng.mylab.CustomSeekBar.SeekBarActivity">
 
-    <me.zhaoliufeng.customviews.SeekBar
+    <me.zhaoliufeng.customviews.CustomSeekBar.SeekBar
         android:id="@+id/seekbar"
         android:layout_gravity="center|bottom"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
 
-    <me.zhaoliufeng.customviews.LightSeekBar
+    <me.zhaoliufeng.customviews.CustomSeekBar.LightSeekBar
         android:id="@+id/lseekbar"
         android:layout_gravity="center"
         android:layout_width="20dp"

@@ -5,16 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import me.zhaoliufeng.customviews.BootPage.BootPage;
 import me.zhaoliufeng.mylab.BootPage.BootPageActivity;
 import me.zhaoliufeng.mylab.Chart.ChartActivity;
+import me.zhaoliufeng.mylab.ColorPicker.ColorPickerActivity;
+import me.zhaoliufeng.mylab.ColorPicker.RingColorPickerActivity;
+import me.zhaoliufeng.mylab.CustomButton.SwitchButtonActivity;
+import me.zhaoliufeng.mylab.CustomSeekBar.SeekBarActivity;
 import me.zhaoliufeng.mylab.DashBoardView.DashBoardActivity;
 import me.zhaoliufeng.mylab.DrawerPlusLayout.DrawerPlusActivity;
 import me.zhaoliufeng.mylab.ItemMask.ItemMaskActivity;
 import me.zhaoliufeng.mylab.NumTextView.NumTextViewActivity;
 import me.zhaoliufeng.mylab.PayPwView.PayPwActivity;
 import me.zhaoliufeng.mylab.lab.LabActivity;
-import me.zhaoliufeng.mylab.lab.ViewLocationActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,5 +69,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void seekOnClick(View view) {
         startActivity(new Intent(this, SeekBarActivity.class));
+    }
+
+    public void ringOnClick(View view) {
+        startActivity(new Intent(this, RingColorPickerActivity.class));
+    }
+
+    public void clickOnClick(View view) {
+        startActivity(new Intent(this, MulitClickActivity.class));
     }
 }
