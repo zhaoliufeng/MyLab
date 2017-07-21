@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import me.zhaoliufeng.customviews.R;
+import me.zhaoliufeng.toolslib.ToastUtils;
 
 /**
  * Created by We-Smart on 2017/7/19.
@@ -34,8 +35,14 @@ public class RingColorPicker extends View{
     private float mStrokeWidth = 150;     //描边粗细
     private int mStartAngle = 130; // 起始角度
     private int mSweepAngle = 280; // 绘制角度 30 + 180 + 30
+    private int mWidth;
+    private int mSmallRadius;   //内圆半径
+    private int mBigRadius;     //外圆半径
+    private int mPaddingVal = 15; //内推距离
 
-    private Bitmap mCenterBitmap;
+    private boolean switchState = false; //开关状态
+    private Bitmap mOffBitmap;
+    private Bitmap mOnBitmap;
 
     public RingColorPicker(Context context) {
         super(context);
@@ -62,7 +69,8 @@ public class RingColorPicker extends View{
         mCirclePaint.setColor(Color.WHITE);
         mRectFArc = new RectF();
 
-        mCenterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.switch_off);
+        mOffBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.switch_off);
+        mOnBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.switch_on);
     }
 
     @Override
@@ -86,32 +94,81 @@ public class RingColorPicker extends View{
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        mWidth = w;
         //设置图片大小
-        mCenterBitmap = zoomImg(mCenterBitmap, (int) (w - 2 * mStrokeWidth - 30), 0);
+        mOffBitmap = zoomImg(mOffBitmap, (int) (mWidth - 2 * mStrokeWidth -  mPaddingVal * 2), 0);
+        mOnBitmap = zoomImg(mOnBitmap, (int) (mWidth - 2 * mStrokeWidth - mPaddingVal * 2), 0);
+
+        mSmallRadius = mOnBitmap.getWidth()/2;
+        mBigRadius = w/2;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawArc(mRectFArc, mStartAngle, mSweepAngle, false, mRingPaint);
-        canvas.drawBitmap(mCenterBitmap, mStrokeWidth + 15, mStrokeWidth + 15 , null);
+        if (switchState){
+            canvas.drawBitmap(mOnBitmap, mStrokeWidth + mPaddingVal, mStrokeWidth + mPaddingVal , null);
+        }else {
+            canvas.drawBitmap(mOffBitmap, mStrokeWidth + mPaddingVal, mStrokeWidth + mPaddingVal , null);
+        }
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                touchOnCenterCircle(getWidth()/2, getHeight()/2, mCenterBitmap.getHeight()/2, event.getX(), event.getY());
+                if (touchOnCenterCircle(getWidth()/2, getHeight()/2, mSmallRadius, event.getX(), event.getY())){
+                    switchState = !switchState;
+                    postInvalidate();
+                }
+                if (touchOnRingCircle(getWidth()/2, getHeight()/2, mBigRadius, mSmallRadius, event.getX(), event.getY())){
+                    ToastUtils.showToast(getContext(), "点在圆环上了");
+                }else
+                    ToastUtils.showToast(getContext(), "没点在圆环上");
+                break;
+            case MotionEvent.ACTION_UP:
+                getFanArea();
                 break;
         }
         return true;
     }
 
+    private float getFanArea(){
+        float fanArea = (float) ((Math.toRadians(280) * Math.PI * Math.pow(mBigRadius, 2)) / 360.0f + Math.PI * Math.pow(mStrokeWidth/2, 2));
+        Log.i("RING", fanArea + " ");
+        return fanArea;
+    }
+    /**
+     * 判断是否触摸在中心开关上
+     * @param centerX 中心点的X坐标
+     * @param centerY 中心点的Y坐标
+     * @param radius 中心圆的半径
+     * @param touchX   触摸的X坐标
+     * @param touchY    触摸的Y坐标
+     * @return  是否触摸在开关上
+     */
     private boolean touchOnCenterCircle(int centerX, int centerY, int radius, float touchX, float touchY){
-        double distance = Math.pow(Math.sqrt(Math.abs(touchX - centerX)) + Math.sqrt(Math.abs(touchY - centerY)), 0.5);
-        Log.i("DISTANCE", distance + "");
+        double distance = Math.sqrt(Math.pow(Math.abs(touchX - centerX), 2) + Math.pow(Math.abs(touchY - centerY), 2));
         return distance < radius;
     }
+
+    /**
+     * 判断是否触摸在边缘色盘上
+     * @param centerX  中心点的X坐标
+     * @param centerY 中心点的Y坐标
+     * @param ringRadius 边缘色盘圆的半径
+     * @param centerRadius 中心圆的半径
+     * @param touchX 触摸的X坐标
+     * @param touchY 触摸的Y坐标
+     * @return 是否触摸在边缘色盘上
+     */
+    private boolean touchOnRingCircle(int centerX, int centerY, int ringRadius, int centerRadius, float touchX, float touchY){
+        double ringDistance = Math.sqrt(Math.pow(Math.abs(touchX - centerX), 2) + Math.pow(Math.abs(touchY - centerY), 2));
+        return ringDistance < ringRadius && !touchOnCenterCircle(centerX, centerY, centerRadius + mPaddingVal, touchX, touchY);
+    }
+
     /**
      *  处理图片
      * @param bm 所要转换的bitmap
@@ -144,4 +201,5 @@ public class RingColorPicker extends View{
         Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
         return newbm;
     }
+
 }

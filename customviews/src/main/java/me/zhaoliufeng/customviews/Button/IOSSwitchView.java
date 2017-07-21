@@ -12,13 +12,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
-
- * For details, please see <b>http://blog.csdn.net/bfbx5173/article/details/45191147<b>
-
- * @author QQ 517309507
-
- */
 public class IOSSwitchView extends View {
 
     private final Paint paint = new Paint();
@@ -29,39 +22,27 @@ public class IOSSwitchView extends View {
     private RadialGradient shadowGradient;
 
     /**
-
      * state switch on
-
      */
     public static final int STATE_SWITCH_ON = 4;
     /**
-
      * state prepare to off
-
      */
     public static final int STATE_SWITCH_ON2 = 3;
     /**
-
      * state prepare to on
-
      */
     public static final int STATE_SWITCH_OFF2 = 2;
     /**
-
      * state prepare to off
-
      */
     public static final int STATE_SWITCH_OFF = 1;
     /**
-
      * current state
-
      */
     private int state = STATE_SWITCH_OFF;
     /**
-
      * last state
-
      */
     private int lastState = state;
 
@@ -139,6 +120,10 @@ public class IOSSwitchView extends View {
         shadowGradient = new RadialGradient(bWidth / 2, bWidth / 2, bWidth / 2, 0xff000000, 0x00000000, Shader.TileMode.CLAMP);
     }
 
+    /**
+     * 画中心圆
+     * @param percent 百分比
+     */
     private void calcBPath(float percent) {
         bPath.reset();
         bRectF.left = bLeft + bStrokeWidth / 2;
@@ -219,15 +204,14 @@ public class IOSSwitchView extends View {
         super.onDraw(canvas);
         paint.setAntiAlias(true);
         final boolean isOn = (state == STATE_SWITCH_ON || state == STATE_SWITCH_ON2);
-        // draw background
-
+        // 画背景 关 灰色 开 绿色
         paint.setStyle(Style.FILL);
         paint.setColor(isOn ? 0xff4bd763 : 0xffe3e3e3);
         canvas.drawPath(sPath, paint);
 
         sAnim = sAnim - 0.1f > 0 ? sAnim - 0.1f : 0;
         bAnim = bAnim - 0.1f > 0 ? bAnim - 0.1f : 0;
-        // draw background animation
+        // 画背景动画
 
         final float scale = sScale * (isOn ? sAnim : 1 - sAnim);
         final float scaleOffset = (bOnLeftX + bRadius - sCenterX) * (isOn ? 1 - sAnim : sAnim);
@@ -242,7 +226,7 @@ public class IOSSwitchView extends View {
         final boolean isState2 = (state == STATE_SWITCH_ON2 || state == STATE_SWITCH_OFF2);
         final float percent = (isState2 ? 1 - bAnim : bAnim);
         calcBPath(percent);
-        // draw shadow
+        //画圆的阴影
         paint.setStyle(Style.FILL);
         paint.setColor(0xff333333);
         paint.setShader(shadowGradient);
@@ -250,6 +234,7 @@ public class IOSSwitchView extends View {
         paint.setShader(null);
         canvas.translate(0, -shadowHeight);
 
+        //画圆
         canvas.scale(0.98f, 0.98f, bWidth / 2, bWidth / 2);
         paint.setStyle(Style.FILL);
         paint.setColor(0xffffffff);
@@ -282,7 +267,7 @@ public class IOSSwitchView extends View {
                         refreshState(STATE_SWITCH_ON2);
                     }
                     bAnim = 1;
-                    invalidate();
+                    postInvalidate();
                     if (listener != null) {
                         if (state == STATE_SWITCH_OFF2) {
                             listener.toggleToOn();
@@ -304,24 +289,17 @@ public class IOSSwitchView extends View {
     }
 
     /**
-
      *
-
      * @return the state of switch view
-
      */
     public int getState() {
         return state;
     }
 
     /**
-
      * if set true , the state change to on;
-
      * if set false, the state change to off
-
      * @param isOn
-
      */
     public void setState(boolean isOn) {
         final int wich = isOn ? STATE_SWITCH_ON : STATE_SWITCH_OFF;
@@ -329,15 +307,10 @@ public class IOSSwitchView extends View {
     }
 
     /**
-
      * if set true , the state change to on;
-
      * if set false, the state change to off
-
      * <br><b>change state with animation</b>
-
      * @param letItOn
-
      */
     public void toggleSwitch(boolean letItOn) {
         final int wich = letItOn ? STATE_SWITCH_ON : STATE_SWITCH_OFF;
