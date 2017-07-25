@@ -22,6 +22,11 @@ public class RingColorPickerActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        ringColorPicker.changeMode(RingColorPicker.MODE.ONE_CHANNEL_MODE);
+        if (ringColorPicker.getMode() == RingColorPicker.MODE.ONE_CHANNEL_MODE){
+            ringColorPicker.changeMode(RingColorPicker.MODE.TWO_CHANNEL_MODE);
+        }else {
+            ringColorPicker.changeMode(RingColorPicker.MODE.ONE_CHANNEL_MODE);
+        }
+
     }
 }

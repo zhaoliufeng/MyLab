@@ -153,7 +153,7 @@ public class RingColorPicker extends View{
                         ||touchOnLeftStrokeCircle(event.getX(), event.getY()) || touchOnRightStrokeCircle(event.getX(), event.getY()) ){
                     // TODO: 2017/7/25 在圆环上
                     mCirclePoint.set((int) event.getX(), (int) event.getY());
-                    getAtan(x, y);
+                    Log.i("COLOR", String.valueOf(getPercentage(x, y)));
                     if (currMode == MODE.TWO_CHANNEL_MODE){
 
                     }
@@ -182,7 +182,7 @@ public class RingColorPicker extends View{
                 break;
             case TWO_CHANNEL_MODE:
                 mRingPaint.setShader(mShader);
-                getLeftRaduis();
+                getAngle();
                 break;
             case ONE_CHANNEL_MODE:
                 mRingPaint.setShader(null);
@@ -232,36 +232,41 @@ public class RingColorPicker extends View{
         return unit <= 1 - 40/360f && unit >= 40/360f;
     }
 
-    private boolean getAtan(float x, float y){
+    /**
+     * @param x 移动点的X坐标
+     * @param y 移动点的Y坐标
+     * @return 移动距离百分比 0 - 1 f
+     */
+    private float getPercentage(float x, float y){
+        //当前坐标点的角度
         float angle = (float) Math.atan2(y, x);
         float unit = (float) (angle/ (2*Math.PI));
         if (unit < 0) {
             unit += 1;
         }
-        float ang1 = (float) (Math.toRadians(130 - getLeftRaduis()));
+        //起始角度 扇形起始角度 - 中心点与线圆角切线角度
+        float ang1 = (float) (Math.toRadians(130 - getAngle()));
         float u1 = (float) (ang1/ (2*Math.PI));
         if (u1 < 0) {
             u1 += 1;
         }
-        if (unit < 1 && unit < u1)
-            unit +=1;
-        float ang2 = (float) (Math.toRadians(50 + getLeftRaduis()));
+        //结束角度 扇形截至角度（130 + 320 - 90） + 中心点与线圆角切线角度
+        float ang2 = (float) (Math.toRadians(50 + getAngle()));
         float u2 = (float) (ang2/ (2*Math.PI));
         if (u2 < 1) {
             u2 += 1;
         }
+        //当前角度百分比 0 - 1
+        if (unit < 1 && unit < u1)
+            unit +=1;
         float b = (unit - u1)/ (u2 - u1);
-        Log.e("COLOR", unit + "  u1 " + u1  + " u2 " + u2 + " b " + b);
-        return false;
+        return 1 - b;
     }
 
-    private float getLeftRaduis(){
+    private float getAngle(){
         return (float) (180 * Math.asin((mStrokeWidth/2 - mCurrRingRadius) / (mStrokeWidth/2 + mSmallRadius))/Math.PI);
     }
 
-    private float getRightRaduis(){
-        return (float) (180 * Math.asin((mStrokeWidth/2 - mCurrRingRadius) / (mStrokeWidth/2 + mSmallRadius))/Math.PI);
-    }
     /**
      * 判断是否触摸在左边的圆上
      * @param tx 触摸坐标的x
