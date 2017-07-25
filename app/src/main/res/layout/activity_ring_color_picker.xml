@@ -7,8 +7,17 @@
     tools:context="me.zhaoliufeng.mylab.ColorPicker.RingColorPickerActivity">
 
     <me.zhaoliufeng.customviews.ViewColorPicker.RingColorPicker
+        android:id="@+id/colorPicker"
         android:layout_gravity="center"
         android:layout_width="300dp"
         android:layout_height="300dp" />
+
+    <Button
+        android:onClick="onClick"
+        android:text="MODE"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="bottom|center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </FrameLayout>
