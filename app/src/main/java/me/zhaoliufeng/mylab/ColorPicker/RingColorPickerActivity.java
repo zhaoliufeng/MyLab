@@ -1,14 +1,13 @@
 package me.zhaoliufeng.mylab.ColorPicker;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import me.zhaoliufeng.customviews.ViewColorPicker.RingColorPicker;
 import me.zhaoliufeng.mylab.R;
+import me.zhaoliufeng.toolslib.ToastUtils;
 
 public class RingColorPickerActivity extends AppCompatActivity {
 
@@ -18,7 +17,18 @@ public class RingColorPickerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ring_color_picker);
         ringColorPicker = (RingColorPicker) findViewById(R.id.colorPicker);
-       // ringColorPicker.changeMode();
+        ringColorPicker.setValChangeListener(new RingColorPicker.OnValChangeListener() {
+
+            @Override
+            public void warmChange(int warmVal, boolean isUp) {
+                Log.i("WARM", warmVal + "");
+            }
+
+            @Override
+            public void colorChange(int colorVal, boolean isUp) {
+
+            }
+        });
     }
 
     public void onClick(View view) {
@@ -27,6 +37,10 @@ public class RingColorPickerActivity extends AppCompatActivity {
         }else {
             ringColorPicker.changeMode(RingColorPicker.MODE.ONE_CHANNEL_MODE);
         }
+    }
+
+    public void colorOnClick(View view) {
+        ringColorPicker.changeMode(RingColorPicker.MODE.FIVE_CHANNEL_MODE);
 
     }
 }

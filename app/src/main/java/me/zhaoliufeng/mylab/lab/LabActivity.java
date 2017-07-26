@@ -22,4 +22,8 @@ public class LabActivity extends AppCompatActivity {
     public void viewApiOnClick(View view) {
         startActivity(new Intent(this, ViewDrawApiActivity.class));
     }
+
+    public void shaderOnClick(View view) {
+        startActivity(new Intent(this, ShaderActivity.class));
+    }
 }

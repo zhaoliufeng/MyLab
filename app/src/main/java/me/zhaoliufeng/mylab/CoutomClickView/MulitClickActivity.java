@@ -1,4 +1,4 @@
-package me.zhaoliufeng.mylab;
+package me.zhaoliufeng.mylab.CoutomClickView;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +11,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
-import me.zhaoliufeng.customviews.ClickView;
+import me.zhaoliufeng.mylab.R;
 
 public class MulitClickActivity extends AppCompatActivity {
 

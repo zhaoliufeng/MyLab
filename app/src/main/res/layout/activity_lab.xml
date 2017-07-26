@@ -20,4 +20,11 @@
         android:text="自定义控件api"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:onClick="shaderOnClick"
+        android:layout_margin="5dp"
+        android:text="颜色渲染"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -1,4 +1,4 @@
-package me.zhaoliufeng.customviews;
+package me.zhaoliufeng.customviews.CoutomClickView;
 
 import android.content.Context;
 import android.content.ReceiverCallNotAllowedException;

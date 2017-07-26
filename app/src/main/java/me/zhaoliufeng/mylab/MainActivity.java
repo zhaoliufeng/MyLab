@@ -9,6 +9,7 @@ import me.zhaoliufeng.mylab.BootPage.BootPageActivity;
 import me.zhaoliufeng.mylab.Chart.ChartActivity;
 import me.zhaoliufeng.mylab.ColorPicker.ColorPickerActivity;
 import me.zhaoliufeng.mylab.ColorPicker.RingColorPickerActivity;
+import me.zhaoliufeng.mylab.CoutomClickView.MulitClickActivity;
 import me.zhaoliufeng.mylab.CustomButton.SwitchButtonActivity;
 import me.zhaoliufeng.mylab.CustomSeekBar.SeekBarActivity;
 import me.zhaoliufeng.mylab.DashBoardView.DashBoardActivity;

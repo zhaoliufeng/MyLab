@@ -5,9 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ComposeShader;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
@@ -18,12 +22,15 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import me.zhaoliufeng.customviews.R;
+import me.zhaoliufeng.toolslib.MathUtil;
 
 /**
  * Created by We-Smart on 2017/7/19.
  */
 
 public class RingColorPicker extends View{
+
+    private OnValChangeListener mValChangeListener;
 
     public enum MODE{
         FIVE_CHANNEL_MODE,  //五路灯
@@ -34,6 +41,14 @@ public class RingColorPicker extends View{
     private MODE currMode = MODE.TWO_CHANNEL_MODE;   //当前模式 默认五路灯
     //渐变色圆
     private int[] doughnutColors = { 0xffffb61a, 0xffffdc92, 0xfffffefc };
+    private float[] mHSB = new float[ 3 ];
+
+    int[] coloursColors =  new int[] {
+            0xFFFF0000, 0xFFFF7F00, 0xFFFFFF00, 0xFF7FFF00,
+            0xFF00FF00, 0xFF00FF7F, 0xFF00FFFF, 0xFF007FFF,
+            0xFF0000FF, 0xFF7F00FF, 0xFFFF00FF, 0xFFFF007F,
+            0xFFFF0000}; //色环颜色值
+
     private Paint mRingPaint;
     private Paint mCirclePaint;     //中心圆画笔
     private Point mCirclePoint;  //指示圆位置
@@ -48,6 +63,10 @@ public class RingColorPicker extends View{
     private int mCurrRingRadius = 18;    //指示圆环半径
     private int mPaddingVal = 15; //内推距离
     private Shader mShader;     //渐变渲染
+    private Shader mSweepShader; //扫描渲染
+    private Shader mRadialShader;    //环形渲染
+    private Paint mColourPaint;   //彩环画笔
+    private Paint mCoverPaint; //遮盖中心圆
 
     private boolean switchState = false; //开关状态
     private Bitmap mOffBitmap;
@@ -83,6 +102,15 @@ public class RingColorPicker extends View{
         mOnBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.switch_on);
 
         mCirclePoint = new Point();
+
+        mColourPaint = new Paint();
+        mColourPaint.setAntiAlias(true);
+
+        mCoverPaint = new Paint();
+        mCoverPaint.setAntiAlias(true);
+        mCoverPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
@@ -95,18 +123,21 @@ public class RingColorPicker extends View{
                 getMeasuredHeight() - mStrokeWidth/2
         );
 
-        float x = (float) Math.sin(Math.toRadians(40.0)) * ( mBigRadius - mStrokeWidth/2 );
-        float y = (float) Math.cos(Math.toRadians(40.0)) * ( mBigRadius - mStrokeWidth/2 );
-        x = getWidth()/2 - x;
-        y = getHeight()/2 + y;
-
-        mCirclePoint.set((int)x, (int)y);
+        mCirclePoint.set(getMeasuredWidth()/2, (int) (mStrokeWidth/2));
         //设置渐变图层
         mShader =  new SweepGradient(getMeasuredWidth()/2, getMeasuredHeight()/2, doughnutColors, null);
         Matrix matrix = new Matrix();
         matrix.setRotate(90, getMeasuredWidth()/2, getMeasuredHeight()/2);
         mShader.setLocalMatrix(matrix);
         mRingPaint.setShader(mShader);
+
+        mSweepShader = new SweepGradient(getMeasuredWidth()/2, getMeasuredHeight()/2, coloursColors, null);
+        mRadialShader = new RadialGradient(getMeasuredWidth()/2, getMeasuredHeight()/2, getMeasuredHeight()/2, new int[]{Color.WHITE, Color.parseColor("#00ffffff")}, null, Shader.TileMode.CLAMP);
+        ComposeShader shader = new ComposeShader(mSweepShader, mRadialShader, PorterDuff.Mode.LIGHTEN);
+        Matrix colourMatrix = new Matrix();
+        colourMatrix.setRotate(-90, getMeasuredWidth()/2, getMeasuredHeight()/2);
+        shader.setLocalMatrix(colourMatrix);
+        mColourPaint.setShader(shader);
     }
 
     @Override
@@ -124,13 +155,21 @@ public class RingColorPicker extends View{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawArc(mRectFArc, mStartAngle, mSweepAngle, false, mRingPaint);
+        if (currMode == MODE.TWO_CHANNEL_MODE || currMode == MODE.ONE_CHANNEL_MODE)
+            canvas.drawArc(mRectFArc, mStartAngle, mSweepAngle, false, mRingPaint);
+
+        if (currMode == MODE.FIVE_CHANNEL_MODE){
+            canvas.drawCircle(getWidth()/2, getHeight()/2, getHeight()/2, mColourPaint);
+            canvas.drawCircle(getWidth()/2, getHeight()/2, mSmallRadius + mPaddingVal, mCoverPaint);
+        }
+
         if (switchState){
             canvas.drawBitmap(mOnBitmap, mStrokeWidth + mPaddingVal, mStrokeWidth + mPaddingVal , null);
         }else {
             canvas.drawBitmap(mOffBitmap, mStrokeWidth + mPaddingVal, mStrokeWidth + mPaddingVal , null);
         }
 
+        //不是单路灯模式才画指示圆
         if(currMode != MODE.ONE_CHANNEL_MODE)
             canvas.drawCircle(mCirclePoint.x, mCirclePoint.y, mCurrRingRadius, mCirclePaint);
     }
@@ -144,24 +183,61 @@ public class RingColorPicker extends View{
                 if (touchOnCenterCircle(getWidth()/2, getHeight()/2, mSmallRadius, event.getX(), event.getY())){
                     switchState = !switchState;
                     postInvalidate();
+                    return false;
                 }
-
                 break;
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
-                if (touchOnRingCircle(getWidth()/2, getHeight()/2, mBigRadius, mSmallRadius, event.getX(), event.getY()) && touchOnFan(y, x)
-                        ||touchOnLeftStrokeCircle(event.getX(), event.getY()) || touchOnRightStrokeCircle(event.getX(), event.getY()) ){
-                    // TODO: 2017/7/25 在圆环上
-                    mCirclePoint.set((int) event.getX(), (int) event.getY());
-                    Log.i("COLOR", String.valueOf(getPercentage(x, y)));
-                    if (currMode == MODE.TWO_CHANNEL_MODE){
-
+                if (currMode == MODE.TWO_CHANNEL_MODE || currMode == MODE.ONE_CHANNEL_MODE){
+                    if (touchOnRingCircle(getWidth()/2, getHeight()/2, mBigRadius, mSmallRadius, event.getX(), event.getY()) && touchOnFan(y, x)
+                            ||touchOnLeftStrokeCircle(event.getX(), event.getY()) || touchOnRightStrokeCircle(event.getX(), event.getY()) ){
+                        // TODO: 2017/7/25 在圆环上
+                        mCirclePoint.set((int) event.getX(), (int) event.getY());
+                        if (mValChangeListener != null){
+                            //双路灯才有触摸值
+                            if (currMode == MODE.TWO_CHANNEL_MODE)
+                                mValChangeListener.warmChange((int) (getPercentage(x, y) * 100), event.getAction() == MotionEvent.ACTION_UP);
+                        }
+                    }else{
+                        // TODO: 2017/7/25 不在圆环上
+                        //mCirclePoint = getBorderPoint(new Point(getWidth()/2, getHeight()/2), new Point((int)event.getX(), (int)event.getY()), mBigRadius, 10);
                     }
-                }else{
-                    // TODO: 2017/7/25 不在圆环上
-                   //mCirclePoint = getBorderPoint(new Point(getWidth()/2, getHeight()/2), new Point((int)event.getX(), (int)event.getY()), mBigRadius, 10);
-                }
+                }else if (currMode == MODE.FIVE_CHANNEL_MODE || currMode == MODE.THREE_CHANNEL_MODE){
+                    int length = getLength(event.getX(), event.getY(), getWidth()/2,
+                            getHeight()/2);
+                    if (length <= mBigRadius - mCurrRingRadius && length > mSmallRadius + mPaddingVal + mCurrRingRadius) {
+                        mCirclePoint.set((int) event.getX(), (int) event.getY());
+                    }else if (length < mSmallRadius + mPaddingVal + mCurrRingRadius ) {
+                        mCirclePoint = getSmallBorderPoint(new Point(getWidth()/2, getHeight()/2), new Point(
+                                (int) event.getX(), (int) event.getY()), mSmallRadius, mCurrRingRadius);
+                    }else {
+                        mCirclePoint = getBorderPoint(new Point(getWidth()/2, getHeight()/2), new Point(
+                                (int) event.getX(), (int) event.getY()), mBigRadius + mCurrRingRadius, mCurrRingRadius);
+                    }
 
+                    double cX = getWidth()/2,
+                            cY = getHeight()/2,
+                            pX = event.getX(),
+                            pY = event.getY();
+
+                    double angel = MathUtil.Angel(pX - cX, pY - cY) + 90; // [-180, 180] => [0, 360]
+                    if (angel < 0)
+                        angel += 360.0;
+
+                    double deltaX = Math.abs(cX - pX), deltaY = (cY - pY);
+                    double radio = Math.pow(deltaX * deltaX + deltaY * deltaY, 0.5) / mBigRadius * 2.0;
+                    if (radio <= 0) radio = 0;
+                    if (radio >= 1.0) radio = 1.0;
+
+                    final double hue = angel / 360.0,
+                            sat = radio,
+                            brt = 1;
+                    //Util.UIColor c = new Util.UIColor(hue, sat, brt);
+                    mHSB[ 0 ] = (float) hue;
+                    mHSB[ 1 ] = (float) sat;
+                    mHSB[ 2 ] = (float) brt;
+                }
+                Log.i("COLOR", mHSB[0] + "  " + mHSB[1] + "   " + mHSB[2]);
                 break;
         }
         postInvalidate();
@@ -194,6 +270,7 @@ public class RingColorPicker extends View{
     public MODE getMode(){
         return currMode;
     }
+
     /**
      * @return 扇区面积
      */
@@ -202,6 +279,7 @@ public class RingColorPicker extends View{
         Log.i("RING", fanArea + " ");
         return fanArea;
     }
+
     /**
      * 判断是否触摸在中心开关上
      * @param centerX 中心点的X坐标
@@ -214,6 +292,10 @@ public class RingColorPicker extends View{
     private boolean touchOnCenterCircle(int centerX, int centerY, int radius, float touchX, float touchY){
         double distance = Math.sqrt(Math.pow(Math.abs(touchX - centerX), 2) + Math.pow(Math.abs(touchY - centerY), 2));
         return distance < radius;
+    }
+
+    public static int getLength(float x1, float y1, float x2, float y2) {
+        return (int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 
     /**
@@ -312,6 +394,7 @@ public class RingColorPicker extends View{
         double ringDistance = Math.sqrt(Math.pow(Math.abs(touchX - centerX), 2) + Math.pow(Math.abs(touchY - centerY), 2));
         return ringDistance < ringRadius - mCurrRingRadius && !touchOnCenterCircle(centerX, centerY, centerRadius + mCurrRingRadius + mPaddingVal, touchX, touchY);
     }
+
     /**
      * 获取边境坐标点
      * @param a 中心点
@@ -322,11 +405,15 @@ public class RingColorPicker extends View{
      */
     public static Point getBorderPoint(Point a, Point b, int cutRadius, int offsetRadius) {
         double radian = getRadian(a, b);
-        Log.i("POINT", radian + "");
         return new Point(a.x + (int) ((cutRadius - offsetRadius * 2) * Math.cos(radian)), a.x
                 + (int) ((cutRadius - offsetRadius * 2) * Math.sin(radian)));
     }
 
+    public static Point getSmallBorderPoint(Point a, Point b, int cutRadius, int offsetRadius){
+        double radian = getRadian(a, b);
+        return new Point(a.x + (int) ((cutRadius + offsetRadius * 2) * Math.cos(radian)), a.x
+                + (int) ((cutRadius + offsetRadius * 2) * Math.sin(radian)));
+    }
     /**
      * 获取角度 PI 的比值
      * @param a 中心点
@@ -377,6 +464,17 @@ public class RingColorPicker extends View{
         // 得到新的图片
         Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
         return newbm;
+    }
+
+    public void setValChangeListener(OnValChangeListener onValChangeListener){
+        this.mValChangeListener = onValChangeListener;
+    }
+
+    public interface OnValChangeListener {
+        void warmChange(int warmVal, boolean isUp);
+
+        void colorChange(int colorVal, boolean isUp);
+
     }
 
 }

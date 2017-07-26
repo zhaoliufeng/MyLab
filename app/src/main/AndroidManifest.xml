@@ -29,7 +29,8 @@
         <activity android:name=".ColorPicker.ColorPickerActivity" />
         <activity android:name=".CustomSeekBar.SeekBarActivity" />
         <activity android:name=".ColorPicker.RingColorPickerActivity" />
-        <activity android:name=".MulitClickActivity"></activity>
+        <activity android:name=".CoutomClickView.MulitClickActivity"/>
+        <activity android:name=".lab.ShaderActivity"/>
     </application>
 
 </manifest>
