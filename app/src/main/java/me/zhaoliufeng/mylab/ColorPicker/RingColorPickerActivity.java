@@ -25,8 +25,13 @@ public class RingColorPickerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void colorChange(int colorVal, boolean isUp) {
+            public void colorChange(float[] hsb, boolean isUp) {
+                Log.i("WARM", "Switch " + hsb[0] + "   " + hsb[1] );
+            }
 
+            @Override
+            public void switchChange(boolean isOpen) {
+                Log.i("WARM", "Switch " + isOpen);
             }
         });
     }

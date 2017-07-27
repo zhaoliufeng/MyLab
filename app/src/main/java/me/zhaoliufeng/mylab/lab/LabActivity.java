@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import me.zhaoliufeng.mylab.CtmTimePicker.CtmTimePickerActivity;
 import me.zhaoliufeng.mylab.R;
 
 public class LabActivity extends AppCompatActivity {
@@ -26,4 +27,9 @@ public class LabActivity extends AppCompatActivity {
     public void shaderOnClick(View view) {
         startActivity(new Intent(this, ShaderActivity.class));
     }
+
+    public void pickerOnClick(View view) {
+        startActivity(new Intent(this, CtmTimePickerActivity.class));
+    }
+
 }

@@ -183,11 +183,14 @@ public class RingColorPicker extends View{
                 if (touchOnCenterCircle(getWidth()/2, getHeight()/2, mSmallRadius, event.getX(), event.getY())){
                     switchState = !switchState;
                     postInvalidate();
+                    if (mValChangeListener != null)
+                        mValChangeListener.switchChange(switchState);
                     return false;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
+                //五路灯与三路灯 和 双路灯，单路灯 的色盘范围不一样
                 if (currMode == MODE.TWO_CHANNEL_MODE || currMode == MODE.ONE_CHANNEL_MODE){
                     if (touchOnRingCircle(getWidth()/2, getHeight()/2, mBigRadius, mSmallRadius, event.getX(), event.getY()) && touchOnFan(y, x)
                             ||touchOnLeftStrokeCircle(event.getX(), event.getY()) || touchOnRightStrokeCircle(event.getX(), event.getY()) ){
@@ -232,12 +235,14 @@ public class RingColorPicker extends View{
                     final double hue = angel / 360.0,
                             sat = radio,
                             brt = 1;
-                    //Util.UIColor c = new Util.UIColor(hue, sat, brt);
+
                     mHSB[ 0 ] = (float) hue;
                     mHSB[ 1 ] = (float) sat;
                     mHSB[ 2 ] = (float) brt;
+                    Log.i("COLOR", mHSB[0] + "  " + mHSB[1] + "   " + mHSB[2]);
+                    if (mValChangeListener != null)
+                         mValChangeListener.colorChange(mHSB, event.getAction() == MotionEvent.ACTION_UP);
                 }
-                Log.i("COLOR", mHSB[0] + "  " + mHSB[1] + "   " + mHSB[2]);
                 break;
         }
         postInvalidate();
@@ -471,9 +476,12 @@ public class RingColorPicker extends View{
     }
 
     public interface OnValChangeListener {
+
         void warmChange(int warmVal, boolean isUp);
 
-        void colorChange(int colorVal, boolean isUp);
+        void colorChange(float[] hsb, boolean isUp);
+
+        void switchChange(boolean isOpen);
 
     }
 
