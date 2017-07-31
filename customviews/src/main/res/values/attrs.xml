@@ -47,4 +47,12 @@
     <declare-styleable name="DashboardView">
         <attr name="DashBoardViewStyle" format="integer"/><!--车辆速度码表样式 大 小-->
     </declare-styleable>
+
+    <declare-styleable name="RingColorPicker">
+        <attr name="RingColor" format="color"/><!--车辆速度码表样式 大 小-->
+    </declare-styleable>
+
+    <declare-styleable name="SwitchButton">
+        <attr name="bgColor" format="color"/>
+    </declare-styleable>
 </resources>

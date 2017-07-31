@@ -40,7 +40,7 @@ public class IOSSwitchView extends View {
     /**
      * current state
      */
-    private int state = STATE_SWITCH_OFF;
+    private int state = STATE_SWITCH_ON;
     /**
      * last state
      */
@@ -212,7 +212,6 @@ public class IOSSwitchView extends View {
         sAnim = sAnim - 0.1f > 0 ? sAnim - 0.1f : 0;
         bAnim = bAnim - 0.1f > 0 ? bAnim - 0.1f : 0;
         // 画背景动画
-
         final float scale = sScale * (isOn ? sAnim : 1 - sAnim);
         final float scaleOffset = (bOnLeftX + bRadius - sCenterX) * (isOn ? 1 - sAnim : sAnim);
         canvas.save();

@@ -104,6 +104,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <Button
+                android:layout_margin="5dp"
+                android:onClick="timeOnClick"
+                android:text="时间选择"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
     </ScrollView>

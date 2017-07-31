@@ -3,15 +3,20 @@ package me.zhaoliufeng.customviews.Button;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+
+import me.zhaoliufeng.customviews.R;
 
 /**
  * Created by We-Smart on 2017/7/11.
@@ -19,10 +24,10 @@ import android.view.View;
 
 public class SwitchButton extends View implements View.OnTouchListener {
 
-    private Paint bgPaint;  //背景画笔
+    private Paint bgFillPaint;  //背景画笔
+    private Paint bgRoundPaint; //背景边框画笔
     private Paint circlePaint;  //圆画笔
-    private Paint textOnPaint;    //ON文字画笔
-    private Paint textOffPaint;    //OFF文字画笔
+    private Paint circleStrokenPaint; //圆边框画笔
     private int mWidth;     //控件宽度
     private int mHeight;     //控件高度
     private int mCircleRadius;  //圆半径
@@ -31,10 +36,10 @@ public class SwitchButton extends View implements View.OnTouchListener {
     private int mStartX; //起始X
     private int mEndX;  //终点X
     private int mCurrX; //当前的X坐标 初始化为起始X
-    private int mCirclePadding = 3;  //圆与边界的距离
+    private int mCirclePadding = 2;  //圆与边界的距离
     private boolean isAimPaying = false;    //标识当前是否正在播放动画
 
-    private SelectChangeListener mSelectChangeListener;
+    private OnStateChangedListener mSelectChangeListener;
     public SwitchButton(Context context) {
         super(context);
         initPaint();
@@ -46,26 +51,29 @@ public class SwitchButton extends View implements View.OnTouchListener {
     }
 
     private void initPaint(){
-        bgPaint = new Paint();
-        bgPaint.setColor(Color.parseColor("#8CB216"));
-        bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setAntiAlias(true);
+
+        bgFillPaint = new Paint();
+        bgFillPaint.setColor(Color.parseColor("#4bd763"));
+        bgFillPaint.setStyle(Paint.Style.FILL);
+        bgFillPaint.setAntiAlias(true);
+        bgFillPaint.setAlpha(0);
+
+        bgRoundPaint = new Paint();
+        bgRoundPaint.setColor(Color.parseColor("#cccccc"));
+        bgRoundPaint.setStrokeWidth(3);
+        bgRoundPaint.setStyle(Paint.Style.STROKE);
+        bgRoundPaint.setAntiAlias(true);
 
         circlePaint = new Paint();
         circlePaint.setAntiAlias(true);
         circlePaint.setColor(Color.parseColor("#FFFFFF"));
         circlePaint.setStyle(Paint.Style.FILL);
 
-        textOnPaint = new Paint();
-        textOnPaint.setColor(Color.parseColor("#FFFFFF"));
-        textOnPaint.setAntiAlias(true);
-        textOnPaint.setTextSize(25);
-        textOnPaint.setAlpha(0);
-
-        textOffPaint = new Paint();
-        textOffPaint.setColor(Color.parseColor("#FFFFFF"));
-        textOffPaint.setAntiAlias(true);
-        textOffPaint.setTextSize(25);
+        circleStrokenPaint = new Paint();
+        circleStrokenPaint.setAntiAlias(true);
+        circleStrokenPaint.setColor(Color.parseColor("#888888"));
+        circleStrokenPaint.setStyle(Paint.Style.STROKE);
+        circleStrokenPaint.setStrokeWidth(2);
 
         mCircleRadius = 10;
         setOnTouchListener(this);
@@ -74,51 +82,49 @@ public class SwitchButton extends View implements View.OnTouchListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(getMeasuredWidth(), (int) (getMeasuredWidth()/1.5));
+        mWidth = getMeasuredWidth();
+        mHeight = getMeasuredHeight();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mWidth = w;
-        mHeight = h;
-        mCircleRadius = mWidth/5 - mCirclePadding; //圆的直径是控件的高度
+        mCircleRadius = (int) (mWidth/3.6f - mCirclePadding); //圆的直径是控件的高度
 
-        mCurrX = mStartX = mCircleRadius + mCirclePadding;
-        mEndX = mWidth - mStartX;
+        mCurrX = mStartX = mCircleRadius + mCirclePadding + 2;
+        mEndX = mWidth - mStartX - 2;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //画背景
         RectF rectF = new RectF();
-        rectF.left = 0;
-        rectF.top = (mHeight - mWidth/2.5f)/2;
-        rectF.right = mWidth;
-        rectF.bottom = (mHeight - mWidth/2.5f)/2 + mWidth/2.5f;
-        canvas.drawRoundRect(rectF, mWidth/5, mWidth/5, bgPaint);
+        rectF.left = 2;
+        rectF.top = (mHeight - mWidth/1.8f)/2;
+        rectF.right = mWidth - 2;
+        rectF.bottom = (mHeight - mWidth/1.8f)/2 + mWidth/1.8f;
+        canvas.drawRoundRect(rectF, mWidth/3.6f, mWidth/3.6f, bgRoundPaint);
+
+        //画背景
+        canvas.drawRoundRect(rectF, mWidth/3.6f, mWidth/3.6f, bgFillPaint);
 
         //画圆
         canvas.drawCircle(mCurrX, mHeight/2, mCircleRadius, circlePaint);
 
-        //画字OFF
-        Rect rect = new Rect();
-        textOffPaint.getTextBounds(texts[0], 0, texts[0].length(), rect);
-        int w = rect.width();
-        int h = rect.height();
-        canvas.drawText(texts[0], mWidth - w - mCircleRadius, (mHeight + h)/2, textOffPaint);
-
-        //画字ON
-        textOffPaint.getTextBounds(texts[1], 0, texts[1].length(), rect);
-        h = rect.height();
-        canvas.drawText(texts[1], mCircleRadius, (mHeight + h)/2, textOnPaint);
+        if (mStatus)
+            circleStrokenPaint.setColor(Color.parseColor("#4bd763"));
+        else
+            circleStrokenPaint.setColor(Color.parseColor("#cccccc"));
+        canvas.drawCircle(mCurrX, mHeight/2, mCircleRadius, circleStrokenPaint);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                setChecked();
+                changeChecked();
+
                 if (mSelectChangeListener != null){
                     mSelectChangeListener.onChange(mStatus);
                 }
@@ -133,27 +139,20 @@ public class SwitchButton extends View implements View.OnTouchListener {
         return false;
     }
 
-    public void setChecked(){
+    public void changeChecked(){
         ValueAnimator circleAnimator;
-        ValueAnimator textOffAnimator;
-        ValueAnimator textOnAnimator;
+        ValueAnimator colorAnimator;
 
         if (isAimPaying)return;
         if (!mStatus){
             //圆的移动
-            circleAnimator = ValueAnimator.ofInt(mStartX, mEndX).setDuration(500);
-
-            //文字的淡入淡出
-            textOffAnimator = ValueAnimator.ofInt(255, 0).setDuration(500);
-            textOnAnimator = ValueAnimator.ofInt(0, 255).setDuration(500);
+            circleAnimator = ValueAnimator.ofInt(mStartX, mEndX).setDuration(300);
+            colorAnimator = ValueAnimator.ofInt(0, 255).setDuration(300);
             mStatus = true;
         }else {
             //圆的移动
-            circleAnimator = ValueAnimator.ofInt(mEndX, mStartX).setDuration(500);
-
-            //文字的淡入淡出
-            textOffAnimator = ValueAnimator.ofInt(0, 255).setDuration(500);
-            textOnAnimator = ValueAnimator.ofInt(255, 0).setDuration(500);
+            circleAnimator = ValueAnimator.ofInt(mEndX, mStartX).setDuration(300);
+            colorAnimator = ValueAnimator.ofInt(255, 0).setDuration(300);
             mStatus = false;
         }
 
@@ -165,21 +164,14 @@ public class SwitchButton extends View implements View.OnTouchListener {
             }
         });
 
-        textOffAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                textOffPaint.setAlpha((int) animation.getAnimatedValue());
+                bgFillPaint.setAlpha((int)animation.getAnimatedValue());
                 postInvalidate();
             }
         });
 
-        textOnAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                textOnPaint.setAlpha((int) animation.getAnimatedValue());
-                postInvalidate();
-            }
-        });
         circleAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -203,15 +195,29 @@ public class SwitchButton extends View implements View.OnTouchListener {
         });
 
         circleAnimator.start();
-        textOffAnimator.start();
-        textOnAnimator.start();
+        colorAnimator.start();
     }
 
-    public void setSelectChangeListener(SelectChangeListener selectChangeListener){
+    public void setState(boolean open){
+        if (mStatus != open){
+            mStatus = open;
+            handler.sendEmptyMessageDelayed(0, 300);
+        }
+    }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            changeChecked();
+        }
+    };
+
+    public void setOnStateChangedListener(OnStateChangedListener selectChangeListener){
         mSelectChangeListener = selectChangeListener;
     }
 
-    public interface SelectChangeListener{
+    public interface OnStateChangedListener{
         void onChange(boolean isOpen);
     }
 }

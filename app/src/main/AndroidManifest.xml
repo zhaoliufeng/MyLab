@@ -31,7 +31,8 @@
         <activity android:name=".ColorPicker.RingColorPickerActivity" />
         <activity android:name=".CoutomClickView.MulitClickActivity" />
         <activity android:name=".lab.ShaderActivity" />
-        <activity android:name=".CtmTimePicker.CtmTimePickerActivity"></activity>
+        <activity android:name=".CtmTimePicker.CtmTimePickerActivity" />
+        <activity android:name=".TimeActivity"></activity>
     </application>
 
 </manifest>

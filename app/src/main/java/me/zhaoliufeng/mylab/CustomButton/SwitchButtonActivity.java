@@ -20,12 +20,13 @@ public class SwitchButtonActivity extends AppCompatActivity {
         iosSwitchView = (IOSSwitchView) findViewById(R.id.ios_btn);
 
         switchButton = (SwitchButton) findViewById(R.id.round_btn);
-        switchButton.setSelectChangeListener(new SwitchButton.SelectChangeListener() {
+        switchButton.setOnStateChangedListener(new SwitchButton.OnStateChangedListener() {
             @Override
             public void onChange(boolean isOpen) {
                 ToastUtils.showToast(getBaseContext(), isOpen ? "开" : "关");
             }
         });
+        switchButton.setState(true);
 
         iosSwitchView.setState(true);
         iosSwitchView.setOnStateChangedListener(new IOSSwitchView.OnStateChangedListener() {
@@ -45,10 +46,10 @@ public class SwitchButtonActivity extends AppCompatActivity {
 
     public void toggleOnClick(View view) {
         iosSwitchView.toggleSwitch(iosSwitchView.getState() == 1);
-        switchButton.setChecked();
+        switchButton.changeChecked();
     }
 
     public void stateOnClick(View view) {
-        iosSwitchView.setState(iosSwitchView.getState() == 1);
+        switchButton.setState(false);
     }
 }

@@ -39,11 +39,13 @@ public class RingColorPicker extends View{
         ONE_CHANNEL_MODE    //一路灯
     }
     private MODE currMode = MODE.TWO_CHANNEL_MODE;   //当前模式 默认五路灯
-    //渐变色圆
-    private int[] doughnutColors = { 0xffffb61a, 0xffffdc92, 0xfffffefc };
+
     private float[] mHSB = new float[ 3 ];
 
-    int[] coloursColors =  new int[] {
+    //渐变色圆
+    private int[] doughnutColors = { 0xffffb61a, 0xffffdc92, 0xfffffefc };
+
+    private int[] coloursColors =  new int[] {
             0xFFFF0000, 0xFFFF7F00, 0xFFFFFF00, 0xFF7FFF00,
             0xFF00FF00, 0xFF00FF7F, 0xFF00FFFF, 0xFF007FFF,
             0xFF0000FF, 0xFF7F00FF, 0xFFFF00FF, 0xFFFF007F,
@@ -220,8 +222,8 @@ public class RingColorPicker extends View{
 
                     double cX = getWidth()/2,
                             cY = getHeight()/2,
-                            pX = event.getX(),
-                            pY = event.getY();
+                            pX = mCirclePoint.x,
+                            pY = mCirclePoint.y;
 
                     double angel = MathUtil.Angel(pX - cX, pY - cY) + 90; // [-180, 180] => [0, 360]
                     if (angel < 0)
@@ -469,6 +471,11 @@ public class RingColorPicker extends View{
         // 得到新的图片
         Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
         return newbm;
+    }
+
+    public void setOneChannelColor(int color){
+        mRingPaint.setColor(color);
+        postInvalidate();
     }
 
     public void setValChangeListener(OnValChangeListener onValChangeListener){

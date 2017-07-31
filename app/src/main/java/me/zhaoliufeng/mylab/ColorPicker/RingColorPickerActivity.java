@@ -1,5 +1,6 @@
 package me.zhaoliufeng.mylab.ColorPicker;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -42,10 +43,34 @@ public class RingColorPickerActivity extends AppCompatActivity {
         }else {
             ringColorPicker.changeMode(RingColorPicker.MODE.ONE_CHANNEL_MODE);
         }
+        Log.i("TIME", getAlarmShow(23, 0));
     }
 
     public void colorOnClick(View view) {
         ringColorPicker.changeMode(RingColorPicker.MODE.FIVE_CHANNEL_MODE);
+        Log.i("TIME", getAlarmShow(12, 0));
+    }
 
+    public void changeOnClick(View view) {
+        ringColorPicker.setOneChannelColor(Color.parseColor("#FC4C2F"));
+        Log.i("TIME", getAlarmShow(0, 0));
+    }
+
+    public static String getAlarmShow(int hours, int minutes) {
+        String data = "";
+        if (hours >= 0 && hours < 12) {
+            data = alarmShow(hours + 1) + ":" + alarmShow(minutes) + " AM";
+        } else {
+            data = alarmShow(hours - 11) + ":" + alarmShow(minutes) + "PM";
+        }
+        return data;
+    }
+
+    public static String alarmShow(int time) {
+        if (time < 10) {
+            return "0" + time;
+        } else {
+            return Integer.toString(time);
+        }
     }
 }

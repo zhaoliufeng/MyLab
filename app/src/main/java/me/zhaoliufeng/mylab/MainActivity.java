@@ -79,4 +79,8 @@ public class MainActivity extends AppCompatActivity {
     public void clickOnClick(View view) {
         startActivity(new Intent(this, MulitClickActivity.class));
     }
+
+    public void timeOnClick(View view) {
+        startActivity(new Intent(this, TimeActivity.class));
+    }
 }

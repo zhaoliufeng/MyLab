@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.TextView;
-import android.widget.TimePicker;
 
 import java.lang.reflect.Field;
 
@@ -18,68 +16,26 @@ import java.lang.reflect.Field;
  * Created by We-Smart on 2017/7/27.
  */
 
-public class CustomTimePicker extends TimePicker {
-
-
-    public CustomTimePicker(Context context) {
+public class CustomNumberPicker extends NumberPicker {
+    public CustomNumberPicker(Context context) {
         super(context);
         init();
     }
 
-    public CustomTimePicker(Context context, AttributeSet attrs) {
+    public CustomNumberPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public CustomTimePicker(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomNumberPicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public void init()
-    {
-        getNumberPicker(this);
+    private void init(){
+        setDividerColor(this);
+        set_numberpicker_text_colour(this);
     }
-
-
-    public void getNumberPicker(TimePicker timePicker)
-    {
-        try
-        {
-            Class<?> clazz = Class.forName("com.android.internal.R$id");
-            Field fieldHour = clazz.getField("hour");
-            fieldHour.setAccessible(true);
-            int hourId = fieldHour.getInt(null);
-            NumberPicker hourNumberPicker = (NumberPicker) timePicker.findViewById(hourId);
-            setDividerColor(hourNumberPicker);
-            set_numberpicker_text_colour(hourNumberPicker);
-
-            Field fieldminute = clazz.getField("minute");
-            fieldminute.setAccessible(true);
-            int minuteId = fieldminute.getInt(null);
-            NumberPicker minuteNumberPicker = (NumberPicker) timePicker.findViewById(minuteId);
-            setDividerColor(minuteNumberPicker);
-
-            Field fieldampm = clazz.getField("amPm");
-            fieldminute.setAccessible(true);
-            int ampmId = fieldampm.getInt(null);
-            NumberPicker ampmNumberPicker = (NumberPicker) timePicker.findViewById(ampmId);
-            setDividerColor(ampmNumberPicker);
-
-            //更改冒号颜色
-            Field fieldDivider=clazz.getField("divider");
-            fieldDivider.setAccessible(true);
-            int dividerId=fieldDivider.getInt(null);
-            TextView textView=(TextView)timePicker.findViewById(dividerId);
-            textView.setTextColor(Color.parseColor("#FFCF2F"));
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
 
     public void setDividerColor(NumberPicker picker)
     {

@@ -7,6 +7,14 @@
     android:background="@color/colorBrown"
     tools:context="me.zhaoliufeng.mylab.CustomSeekBar.SeekBarActivity">
 
+    <me.zhaoliufeng.customviews.CustomSeekBar.SunSeekBar
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="350dp"
+        android:layout_height="30dp" />
+
     <me.zhaoliufeng.customviews.CustomSeekBar.SeekBar
         android:id="@+id/seekbar"
         android:layout_gravity="center|bottom"
