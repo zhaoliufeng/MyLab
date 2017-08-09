@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import me.zhaoliufeng.mylab.CtmTimePicker.CtmTimePickerActivity;
+import me.zhaoliufeng.mylab.MusicPlayer.MusicPlayActivity;
 import me.zhaoliufeng.mylab.R;
 
 public class LabActivity extends AppCompatActivity {
@@ -32,4 +33,7 @@ public class LabActivity extends AppCompatActivity {
         startActivity(new Intent(this, CtmTimePickerActivity.class));
     }
 
+    public void musicOnClick(View view) {
+        startActivity(new Intent(this, MusicPlayActivity.class));
+    }
 }

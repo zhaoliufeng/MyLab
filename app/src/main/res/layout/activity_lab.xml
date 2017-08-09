@@ -34,4 +34,12 @@
         android:text="自定义时间选择器"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:onClick="musicOnClick"
+        android:layout_margin="5dp"
+        android:text="音乐播放"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

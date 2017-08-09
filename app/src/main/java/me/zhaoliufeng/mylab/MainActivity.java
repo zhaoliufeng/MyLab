@@ -83,4 +83,8 @@ public class MainActivity extends AppCompatActivity {
     public void timeOnClick(View view) {
         startActivity(new Intent(this, TimeActivity.class));
     }
+
+    public void ringProgressOnClick(View view) {
+        startActivity(new Intent(this, RingProgressActivity.class));
+    }
 }
