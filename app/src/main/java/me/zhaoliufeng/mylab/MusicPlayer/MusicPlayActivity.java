@@ -1,14 +1,15 @@
 package me.zhaoliufeng.mylab.MusicPlayer;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.media.MediaPlayer;
-import android.media.TimedText;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -19,12 +20,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -47,9 +45,11 @@ public class MusicPlayActivity extends AppCompatActivity {
     private RingProgressBar progressBar;
     private MusicAdapter musicAdapter;
     private Button mBtnPause;
-    private List<Song> datas;
+    private List<Song> musicDatas;
     private int mCurrIndex;
     private Timer timer;
+    private PlayMusicService musicService;
+    private PlayConnection conn;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -62,25 +62,12 @@ public class MusicPlayActivity extends AppCompatActivity {
         mBtnPause = (Button) findViewById(R.id.btn_pause);
         mediaPlayer = new MediaPlayer();
 
-        datas = getMusicData(getBaseContext());
-        musicAdapter = new MusicAdapter(getBaseContext(), datas);
-        musicList.setLayoutManager(new LinearLayoutManager (this, LinearLayoutManager.VERTICAL, false));
-        musicList.addItemDecoration (new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        musicList.setAdapter(musicAdapter);
-
-        musicAdapter.setItemSelectListener(new MusicAdapter.ItemSelectListener() {
-            @Override
-            public void itemSelect(int index) {
-                mCurrIndex = index;
-                mediaPlayer.reset();
-                try {
-                    mediaPlayer.setDataSource(datas.get(index).getPath());
-                    prepareMediaPlayer();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        if(musicService == null){
+            Intent musicIntent = new Intent(this, PlayMusicService.class);
+            this.startService(musicIntent);
+            conn = new PlayConnection();
+            this.bindService(musicIntent, conn, BIND_AUTO_CREATE);
+        }
 
         mediaPlayer.setLooping(false);
         //播放完继续播放下一首
@@ -97,7 +84,7 @@ public class MusicPlayActivity extends AppCompatActivity {
 
     private void initMediaData() {
         try {
-            mediaPlayer.setDataSource(datas.get(mCurrIndex).getPath());
+            mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
             mediaPlayer.prepare();
             progressBar.setMax(mediaPlayer.getDuration());
             startTimeCount(mediaPlayer);
@@ -145,7 +132,7 @@ public class MusicPlayActivity extends AppCompatActivity {
     public void lastClick(View view) {
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(getMusicData(this).get(mCurrIndex = mCurrIndex == 0 ? datas.size() -1 :  --mCurrIndex).getPath());
+            mediaPlayer.setDataSource(getMusicData(this).get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() -1 :  --mCurrIndex).getPath());
             prepareMediaPlayer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -172,7 +159,7 @@ public class MusicPlayActivity extends AppCompatActivity {
     private void nextMusic(){
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(getMusicData(this).get(mCurrIndex = mCurrIndex == datas.size() - 1 ? 0 :  ++mCurrIndex).getPath());
+            mediaPlayer.setDataSource(getMusicData(this).get(mCurrIndex = mCurrIndex == musicDatas.size() - 1 ? 0 :  ++mCurrIndex).getPath());
             prepareMediaPlayer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -224,5 +211,40 @@ public class MusicPlayActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mediaPlayer.stop();
+    }
+
+    //服务连接回调
+    private class PlayConnection implements ServiceConnection{
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //连接之后开始查找音乐
+            musicService = ((PlayMusicService.PlayBinder) service).getService();
+            musicDatas = musicService.getMusicData();
+            Log.i("MUSIC", "READY  TO  LOAD MUSIC");
+            musicAdapter = new MusicAdapter(getBaseContext(), musicDatas);
+            musicList.setLayoutManager(new LinearLayoutManager (MusicPlayActivity.this, LinearLayoutManager.VERTICAL, false));
+            musicList.addItemDecoration (new DividerItemDecoration(MusicPlayActivity.this, DividerItemDecoration.VERTICAL));
+            musicList.setAdapter(musicAdapter);
+
+            musicAdapter.setItemSelectListener(new MusicAdapter.ItemSelectListener() {
+                @Override
+                public void itemSelect(int index) {
+                    mCurrIndex = index;
+                    mediaPlayer.reset();
+                    try {
+                        mediaPlayer.setDataSource(musicDatas.get(index).getPath());
+                        prepareMediaPlayer();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
     }
 }

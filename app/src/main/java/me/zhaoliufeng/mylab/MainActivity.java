@@ -87,4 +87,8 @@ public class MainActivity extends AppCompatActivity {
     public void ringProgressOnClick(View view) {
         startActivity(new Intent(this, RingProgressActivity.class));
     }
+
+    public void wifiScanOnClick(View view) {
+        startActivity(new Intent(this, WifiScanActivity.class));
+    }
 }
