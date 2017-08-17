@@ -10,8 +10,13 @@ import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.LinearLayout;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -26,10 +31,15 @@ public class PlayMusicService extends Service {
     //当前播放音乐的下标 默认0
     private int mCurrIndex = 0;
     private List<Song> musicDatas;
-    private IMusicPlayListener musicPlayListener = new IMusicPlayListener() {
-    };
-
-    private static final int COUNT_TIME = 0;
+    private IMusicPlayListener musicPlayListener = new IMusicPlayListener();
+    private MODE mMode = MODE.LIST_LOOP;
+    private List<Integer> randomIndexList = new ArrayList<>();
+    //播放模式
+    enum MODE{
+        LIST_LOOP,//列表循环
+        SINGLE_LOOP,//单曲循环
+        RANDOM_LOOP;//随机循环
+    }
 
     public PlayMusicService() {
 
@@ -54,16 +64,55 @@ public class PlayMusicService extends Service {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                Log.e("MUSIC", "INCOME");
-                nextMusic();
+                switch (mMode){
+                    case LIST_LOOP:
+                        mediaPlayer.setLooping(false);
+                        nextMusic();
+                        break;
+                    case SINGLE_LOOP:
+                        mediaPlayer.setLooping(true);
+                        break;
+                    case RANDOM_LOOP:
+                        mediaPlayer.setLooping(false);
+                        randomNextMusic();
+                        break;
+                }
+
             }
         });
     }
 
-    private void initMediaData() {
+    private void randomNextMusic() {
+        //判断list是否已经大于列表数量
+        if (randomIndexList.size() >= musicDatas.size()) {
+            randomIndexList.clear();
+            return;
+        }
+        //生成随机数 判断生成的随机数是否在list中 是则重新生成
+        int randomIndex;
+        do {
+            randomIndex = (int) (Math.random() * musicDatas.size());
+        }
+        while (randomIndexList.contains(randomIndex));
+        mCurrIndex = randomIndex;
         try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex).getPath());
+            prepareMediaPlayer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        musicPlayListener.MusicChange(mCurrIndex, mediaPlayer.getDuration());
+
+        randomIndexList.add(randomIndex);
+    }
+
+    public void initMediaData() {
+        try {
+            mediaPlayer.reset();
             mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
             mediaPlayer.prepare();
+            mediaPlayer.start();
             startTimeCount(mediaPlayer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,13 +123,9 @@ public class PlayMusicService extends Service {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        musicPlayListener.MusicPlaying(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
-                    }
-                });
-
+                if (mediaPlayer.isPlaying()){
+                    musicPlayListener.MusicPlaying(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
+                }
             }
         }, 0, 1000);
     }
@@ -121,28 +166,46 @@ public class PlayMusicService extends Service {
         return list;
     }
 
-    //上一首
-    public void lastMusic() {
+    //选择音乐
+    public void selectMusic(int index) {
+        mCurrIndex = index;
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() -1 :  --mCurrIndex).getPath());
+            mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
+            prepareMediaPlayer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //上一首
+    public int lastMusic() {
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() - 1 : --mCurrIndex).getPath());
             prepareMediaPlayer();
         } catch (IOException e) {
             e.printStackTrace();
         }
         musicPlayListener.MusicChange(mCurrIndex, mediaPlayer.getDuration());
+        return mCurrIndex;
     }
 
     //下一首
-    public void nextMusic() {
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == musicDatas.size() - 1 ? 0 : ++mCurrIndex).getPath());
-            prepareMediaPlayer();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public int nextMusic() {
+        if (mMode == MODE.RANDOM_LOOP){
+            randomNextMusic();
+        }else {
+            try {
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == musicDatas.size() - 1 ? 0 : ++mCurrIndex).getPath());
+                prepareMediaPlayer();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            musicPlayListener.MusicChange(mCurrIndex, mediaPlayer.getDuration());
         }
-        musicPlayListener.MusicChange(mCurrIndex, mediaPlayer.getDuration());
+        return mCurrIndex;
     }
 
     private void prepareMediaPlayer() throws IOException {
@@ -157,9 +220,19 @@ public class PlayMusicService extends Service {
         musicPlayListener.MusicPaused();
     }
 
-    //设置播放模式
-    public void setPlayMode() {
+    //继续 开始播放
+    public void start() {
+        mediaPlayer.start();
+        musicPlayListener.MusicStart();
+    }
 
+    //设置播放模式
+    public void setPlayMode(MODE mode) {
+        mMode = mode;
+        if (mMode == MODE.RANDOM_LOOP){
+            randomIndexList.clear();
+            randomIndexList.add(mCurrIndex);
+        }
     }
 
     public class PlayBinder extends Binder {
@@ -191,10 +264,14 @@ public class PlayMusicService extends Service {
         public void MusicResumed() {
         }
 
-        public void MusicPlaying(int currPostion, int dur) {
+        public void MusicStart() {
+
         }
 
-        public void MusicChange(int currIndex, int dur){
+        public void MusicPlaying(int currPosition, int dur) {
+        }
+
+        public void MusicChange(int currIndex, int dur) {
 
         }
 
