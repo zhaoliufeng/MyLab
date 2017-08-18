@@ -13,9 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -34,13 +36,17 @@ public class MusicPlayActivity extends AppCompatActivity {
 
     private RingProgressBar progressBar;
     private MusicAdapter musicAdapter;
-    private Button mBtnPause;
+    private ImageView mBtnPause;
     //音乐列表数组
     private List<Song> musicDatas;
     private PlayMusicService musicService;
     private PlayConnection conn;
-    private String[] modeStrs = {"循环", "单曲", "随机"};
+    private boolean isPalying = false;
+    private TextView mTvMusicName, mTvMusicSinger;
+    private int[] modeIds = {R.drawable.icon_music_play_mode_cycle, R.drawable.icon_music_play_mode_single, R.drawable.icon_music_random_play};
     private int modeIndex = 0; //当前播放模式 循环
+
+    private ImageView imgMode;
 
     PlayMusicService.IMusicPlayListener musicPlayListener = new PlayMusicService.IMusicPlayListener(){
         @Override
@@ -54,13 +60,20 @@ public class MusicPlayActivity extends AppCompatActivity {
             mHandler.sendMessage(msg);
             Log.i("MUSIC", currPosition + " : " + dur);
         }
+
+        @Override
+        public void NewPlay(String musicName, String singer) {
+            super.NewPlay(musicName, singer);
+            mTvMusicName.setText(musicName);
+            mTvMusicSinger.setText(singer);
+        }
     };
 
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            tvTime.setText(String.format("%02d:%02d", msg.arg1/1000/60, msg.arg1/1000%60) + "/" + String.format("%02d:%02d", msg.arg2/1000/60, msg.arg2/1000%60) );
+            tvTime.setText(Html.fromHtml(String.format("%02d:%02d", msg.arg1/1000/60, msg.arg1/1000%60) + "/<font color='#00CEFC'>" + String.format("%02d:%02d", msg.arg2/1000/60, msg.arg2/1000%60) + "</font>"));
         }
     };
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -71,7 +84,10 @@ public class MusicPlayActivity extends AppCompatActivity {
         tvTime = (TextView) findViewById(R.id.tv_time);
         progressBar = (RingProgressBar) findViewById(R.id.progressBar);
         musicList = (RecyclerView) findViewById(R.id.music_list);
-        mBtnPause = (Button) findViewById(R.id.btn_pause);
+        mBtnPause = (ImageView) findViewById(R.id.btn_pause);
+        imgMode = (ImageView) findViewById(R.id.img_music_mode);
+        mTvMusicName = (TextView) findViewById(R.id.tv_music_name);
+        mTvMusicSinger = (TextView) findViewById(R.id.tv_music_singer);
 
         if(musicService == null){
             Intent musicIntent = new Intent(this, PlayMusicService.class);
@@ -81,15 +97,14 @@ public class MusicPlayActivity extends AppCompatActivity {
         }
     }
 
-
-
     public void pauseClick(View view) {
-        Button btn = (Button) view;
-        if (btn.getText().toString().equals("播放")){
-            btn.setText("暂停");
+        ImageView btn = (ImageView) view;
+        isPalying = !isPalying;
+        if (isPalying){
+            btn.setImageResource(R.drawable.icon_play_music_pause);
             musicService.start();
         }else {
-            btn.setText("播放");
+            btn.setImageResource(R.drawable.icon_play_music_play);
             musicService.pause();
         }
     }
@@ -98,14 +113,16 @@ public class MusicPlayActivity extends AppCompatActivity {
     public void lastClick(View view){
         musicAdapter.itemChange(musicService.lastMusic());
         musicAdapter.notifyDataSetChanged();
-        mBtnPause.setText("暂停");
+        mBtnPause.setImageResource(R.drawable.icon_play_music_pause);
+        isPalying = true;
     }
 
     //下一首
     public void nextClick(View view) {
         musicAdapter.itemChange(musicService.nextMusic());
         musicAdapter.notifyDataSetChanged();
-        mBtnPause.setText("暂停");
+        mBtnPause.setImageResource(R.drawable.icon_play_music_pause);
+        isPalying = true;
     }
 
     @Override
@@ -115,8 +132,8 @@ public class MusicPlayActivity extends AppCompatActivity {
     }
 
     public void modeClick(View view) {
-        Button btn = (Button) view;
-        btn.setText(modeStrs[modeIndex = modeIndex < 2 ? ++modeIndex : 0]);
+        ImageView btn = (ImageView) view;
+        btn.setImageResource(modeIds[modeIndex = modeIndex < 2 ? ++modeIndex : 0]);
         switch (modeIndex){
             case 0:
                 musicService.setPlayMode(PlayMusicService.MODE.LIST_LOOP);
@@ -154,7 +171,7 @@ public class MusicPlayActivity extends AppCompatActivity {
                     musicAdapter.itemChange(index);
                     musicAdapter.notifyDataSetChanged();
                     //修改按钮显示为 暂停
-                    mBtnPause.setText("暂停");
+                    mBtnPause.setImageResource(R.drawable.icon_play_music_pause);
                 }
             });
             musicService.initMediaData();

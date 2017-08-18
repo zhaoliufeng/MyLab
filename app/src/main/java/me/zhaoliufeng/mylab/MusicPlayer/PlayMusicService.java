@@ -66,14 +66,16 @@ public class PlayMusicService extends Service {
             public void onCompletion(MediaPlayer mp) {
                 switch (mMode){
                     case LIST_LOOP:
-                        mediaPlayer.setLooping(false);
                         nextMusic();
                         break;
                     case SINGLE_LOOP:
-                        mediaPlayer.setLooping(true);
+                        try {
+                            prepareMediaPlayer();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case RANDOM_LOOP:
-                        mediaPlayer.setLooping(false);
                         randomNextMusic();
                         break;
                 }
@@ -82,6 +84,9 @@ public class PlayMusicService extends Service {
         });
     }
 
+    /**
+     * 随机下一曲
+     */
     private void randomNextMusic() {
         //判断list是否已经大于列表数量
         if (randomIndexList.size() >= musicDatas.size()) {
@@ -111,9 +116,7 @@ public class PlayMusicService extends Service {
         try {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-            startTimeCount(mediaPlayer);
+            prepareMediaPlayer();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -168,6 +171,7 @@ public class PlayMusicService extends Service {
 
     //选择音乐
     public void selectMusic(int index) {
+        if (mCurrIndex == index)return;
         mCurrIndex = index;
         try {
             mediaPlayer.reset();
@@ -180,14 +184,18 @@ public class PlayMusicService extends Service {
 
     //上一首
     public int lastMusic() {
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() - 1 : --mCurrIndex).getPath());
-            prepareMediaPlayer();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (mMode == MODE.RANDOM_LOOP){
+            randomNextMusic();
+        }else {
+            try {
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() - 1 : --mCurrIndex).getPath());
+                prepareMediaPlayer();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            musicPlayListener.MusicChange(mCurrIndex, mediaPlayer.getDuration());
         }
-        musicPlayListener.MusicChange(mCurrIndex, mediaPlayer.getDuration());
         return mCurrIndex;
     }
 
@@ -211,6 +219,7 @@ public class PlayMusicService extends Service {
     private void prepareMediaPlayer() throws IOException {
         mediaPlayer.prepare();
         mediaPlayer.start();
+        musicPlayListener.NewPlay(musicDatas.get(mCurrIndex).getMusicName(), musicDatas.get(mCurrIndex).getArtist());
         startTimeCount(mediaPlayer);
     }
 
@@ -252,7 +261,7 @@ public class PlayMusicService extends Service {
 
     public static class IMusicPlayListener {
 
-        public void NewPlay(Song songData) {
+        public void NewPlay(String musicName, String singer) {
         }
 
         public void MusicStoped() {
@@ -281,5 +290,11 @@ public class PlayMusicService extends Service {
 
         public void MusicListChanged() {
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
     }
 }

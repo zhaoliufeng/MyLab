@@ -23,7 +23,7 @@ import android.view.animation.LinearInterpolator;
 public class RingProgressBar extends View {
 
     //渐变色圆
-    private int[] doughnutColors = { 0x0021303C, 0xAA06ACD3, 0xff00CEFC };
+    private int[] doughnutColors = { 0x001D2C39, 0xAA07A7CD, 0xff00CEFC };
 
     private RectF mRectFArc;    //圆环边界矩形
     private float mStrokeWidth = 5;     //描边粗细

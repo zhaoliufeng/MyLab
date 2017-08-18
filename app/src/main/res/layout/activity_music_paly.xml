@@ -1,69 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#152534"
     android:gravity="center_horizontal"
     tools:context="me.zhaoliufeng.mylab.MusicPlayer.MusicPlayActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/music_list"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp">
-
-    </android.support.v7.widget.RecyclerView>
-
     <LinearLayout
-        android:gravity="center"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <me.zhaoliufeng.customviews.RingProgressBar
-            android:layout_margin="10dp"
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+        android:layout_height="match_parent">
 
-        <TextView
-            tools:text="00:20/03:30"
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <android.support.v7.widget.RecyclerView
+            android:visibility="gone"
+            android:id="@+id/music_list"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+
+        </android.support.v7.widget.RecyclerView>
 
         <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+
+            <FrameLayout
+                android:background="@drawable/music_progress_bg"
+                android:layout_width="230dp"
+                android:layout_height="230dp">
+
+                <me.zhaoliufeng.customviews.RingProgressBar
+                    android:padding="10dp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@drawable/icon_music_note"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                    <TextView
+                        android:id="@+id/tv_music_name"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/colorWhite"
+                        tools:text="HomeWork"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_music_singer"
+                        android:layout_marginTop="2dp"
+                        android:textSize="12sp"
+                        android:textColor="@color/colorWhite"
+                        tools:text="Json"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorWhite"
+                        tools:text="00:20/03:30"
+                        android:id="@+id/tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginBottom="13dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/music_ctrl_bg"
+            android:layout_gravity="bottom"
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <Button
-                android:onClick="modeClick"
-                android:text="循环"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
-            <Button
-                android:onClick="lastClick"
-                android:text="上一曲"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/img_music_mode"
+                    android:src="@drawable/icon_music_play_mode_cycle"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:onClick="modeClick"
+                    android:text="循环"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@drawable/icon_play_music_last"
+                    android:onClick="lastClick"
+                    android:text="上一曲"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@drawable/icon_play_music_pause"
+                    android:id="@+id/btn_pause"
+                    android:onClick="pauseClick"
+                    android:text="播放"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_pause"
-                android:onClick="pauseClick"
-                android:text="播放"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@drawable/icon_play_music_next"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:onClick="nextClick"
+                    android:text="下一曲" />
+            </LinearLayout>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="nextClick"
-                android:text="下一曲" />
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@drawable/icon_music_list"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
+        <LinearLayout
+            android:layout_weight="4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
         </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
+</FrameLayout>
