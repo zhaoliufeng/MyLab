@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import butterknife.OnTouch;
 import butterknife.Unbinder;
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 import me.zhaoliufeng.customviews.ItemMask.ItemMask;
 import me.zhaoliufeng.mylab.R;
 import me.zhaoliufeng.toolslib.ToastUtils;
@@ -62,6 +63,7 @@ public class FragmentList extends Fragment implements View.OnTouchListener, Adap
                 new String[]{"1", "2", "3", "4", "5", "6", "7", "8"}
         );
         lv.setAdapter(arrayAdapter);
+        OverScrollDecoratorHelper.setUpOverScroll(lv);
     }
 
     /**

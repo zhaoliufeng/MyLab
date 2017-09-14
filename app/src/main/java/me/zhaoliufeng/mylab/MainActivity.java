@@ -1,9 +1,18 @@
 package me.zhaoliufeng.mylab;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import me.zhaoliufeng.mylab.BootPage.BootPageActivity;
 import me.zhaoliufeng.mylab.Chart.ChartActivity;
@@ -91,4 +100,52 @@ public class MainActivity extends AppCompatActivity {
     public void wifiScanOnClick(View view) {
         startActivity(new Intent(this, WifiScanActivity.class));
     }
+
+    public void appOnClick(View view) {
+       // try {
+//            PackageInfo packageInfo=getPackageManager().getPackageInfo("com.curi.medialab.poopoo", 0);
+//            ComponentName comp = new ComponentName("com.curi.medialab.poopoo","com.curi.medialab.poopoo.LoginActivity");
+            PackageManager packageManager = getPackageManager();
+            Intent intent = packageManager.getLaunchIntentForPackage("com.curi.medialab.poopoo");
+//            Intent intent=new Intent();
+//            intent.setComponent(comp);
+            intent.setAction("android.intent.action.VIEW");
+            startActivity(intent);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            //没有安装该程序
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            File apk=copyApkFromAssets("CustomView.apk");
+//            intent.setDataAndType(Uri.fromFile(apk),
+//                    "application/vnd.android.package-archive");
+//            MainActivity.this.startActivity(intent);
+//        }
+    }
+
+    private File APK_DIR = new File(Environment.getExternalStorageDirectory().toString()+"/APK");
+
+    private File copyApkFromAssets(String apkName){
+        File f = null;
+        try {
+            if(!APK_DIR.exists()){
+                APK_DIR.mkdirs();
+            }
+            InputStream is = getAssets().open(apkName);
+            f = new File(APK_DIR, apkName);
+            f.createNewFile();
+            FileOutputStream fos = new FileOutputStream(f);
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while((len=is.read(buffer))!=-1){
+                fos.write(buffer, 0, len);
+            }
+            fos.flush();
+            fos.close();
+            is.close();
+            return f;
+        } catch (Exception e) {
+            //报错不执行
+        }
+        return null;
+    }
+
 }

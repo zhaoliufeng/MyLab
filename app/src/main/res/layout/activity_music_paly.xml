@@ -3,81 +3,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#152534"
     android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context="me.zhaoliufeng.mylab.MusicPlayer.MusicPlayActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:visibility="gone"
-            android:id="@+id/music_list"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="0dp">
-
-        </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:gravity="center"
-            android:orientation="vertical"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_height="0dp">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <FrameLayout
-                android:background="@drawable/music_progress_bg"
                 android:layout_width="230dp"
-                android:layout_height="230dp">
+                android:layout_height="230dp"
+                android:background="@drawable/music_progress_bg">
 
                 <me.zhaoliufeng.customviews.RingProgressBar
-                    android:padding="10dp"
-                    android:layout_margin="10dp"
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:padding="10dp" />
 
                 <LinearLayout
-                    android:gravity="center"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <ImageView
-                        android:src="@drawable/icon_music_note"
                         android:layout_width="40dp"
-                        android:layout_height="40dp" />
+                        android:layout_height="40dp"
+                        android:src="@drawable/icon_music_note" />
 
                     <TextView
                         android:id="@+id/tv_music_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
                         android:textColor="@color/colorWhite"
-                        tools:text="HomeWork"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        tools:text="HomeWork" />
 
                     <TextView
                         android:id="@+id/tv_music_singer"
-                        android:layout_marginTop="2dp"
-                        android:textSize="12sp"
-                        android:textColor="@color/colorWhite"
-                        tools:text="Json"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        tools:text="Json" />
 
                     <TextView
-                        android:layout_marginTop="15dp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/colorWhite"
-                        tools:text="00:20/03:30"
                         android:id="@+id/tv_time"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/colorWhite"
+                        tools:text="00:20/03:30" />
                 </LinearLayout>
 
             </FrameLayout>
@@ -85,100 +76,177 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginBottom="13dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/music_ctrl_bg"
-            android:layout_gravity="bottom"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:gravity="center"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
                 <ImageView
                     android:id="@+id/img_music_mode"
-                    android:src="@drawable/icon_music_play_mode_cycle"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:onClick="modeClick"
-                    android:text="循环"
                     android:layout_width="20dp"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:src="@drawable/icon_play_music_last"
-                    android:onClick="lastClick"
-                    android:text="上一曲"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:gravity="center"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:src="@drawable/icon_play_music_pause"
-                    android:id="@+id/btn_pause"
-                    android:onClick="pauseClick"
-                    android:text="播放"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:onClick="modeClick"
+                    android:src="@drawable/icon_music_play_mode_cycle"
+                    android:text="循环" />
             </LinearLayout>
 
             <LinearLayout
-                android:gravity="center"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
                 <ImageView
-                    android:src="@drawable/icon_play_music_next"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:onClick="lastClick"
+                    android:src="@drawable/icon_play_music_last"
+                    android:text="上一曲" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btn_pause"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:onClick="pauseClick"
+                    android:src="@drawable/icon_play_music_pause"
+                    android:text="播放" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:onClick="nextClick"
+                    android:src="@drawable/icon_play_music_next"
                     android:text="下一曲" />
             </LinearLayout>
 
             <LinearLayout
-                android:gravity="center"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
                 <ImageView
-                    android:src="@drawable/icon_music_list"
+                    android:onClick="listClick"
                     android:layout_width="20dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_music_list" />
             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/llayout_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <View
-            android:layout_weight="1"
+            android:id="@+id/view_mask"
             android:layout_width="match_parent"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <LinearLayout
-            android:layout_weight="4"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_weight="3.7"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:background="#FF273540"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_list_mode"
+                    android:layout_marginLeft="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:onClick="modeClick"
+                    android:src="@drawable/icon_music_play_mode_cycle"
+                    android:text="循环" />
+
+                <TextView
+                    android:id="@+id/tv_mode"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/colorWhite"
+                    android:text="列表循环"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_music_num"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="@color/colorLightGray"
+                    android:text="15首"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:background="#7A848A"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/music_list"
+                android:background="#FF273540"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <View
+                android:background="#7A848A"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"/>
+
+            <TextView
+                android:onClick="cancelClick"
+                android:background="#152534"
+                android:padding="15dp"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"
+                android:text="取消"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
         </LinearLayout>
     </LinearLayout>

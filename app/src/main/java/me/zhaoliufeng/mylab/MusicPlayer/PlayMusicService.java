@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
+import android.media.audiofx.Visualizer;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -34,8 +35,9 @@ public class PlayMusicService extends Service {
     private IMusicPlayListener musicPlayListener = new IMusicPlayListener();
     private MODE mMode = MODE.LIST_LOOP;
     private List<Integer> randomIndexList = new ArrayList<>();
+
     //播放模式
-    enum MODE{
+    enum MODE {
         LIST_LOOP,//列表循环
         SINGLE_LOOP,//单曲循环
         RANDOM_LOOP;//随机循环
@@ -64,16 +66,12 @@ public class PlayMusicService extends Service {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                switch (mMode){
+                switch (mMode) {
                     case LIST_LOOP:
                         nextMusic();
                         break;
                     case SINGLE_LOOP:
-                        try {
-                            prepareMediaPlayer();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        singleMusic();
                         break;
                     case RANDOM_LOOP:
                         randomNextMusic();
@@ -112,11 +110,23 @@ public class PlayMusicService extends Service {
         randomIndexList.add(randomIndex);
     }
 
-    public void initMediaData() {
+    private void singleMusic(){
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
+            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex).getPath());
             prepareMediaPlayer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initMediaData() {
+        try {
+            if (musicDatas.size() > 0) {
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
+                prepareMediaPlayer();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,7 +136,7 @@ public class PlayMusicService extends Service {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if (mediaPlayer.isPlaying()){
+                if (mediaPlayer.isPlaying()) {
                     musicPlayListener.MusicPlaying(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
                 }
             }
@@ -150,12 +160,49 @@ public class PlayMusicService extends Service {
                 song.setSize(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)));
                 if (song.getSize() > 1000 * 800) {
                     // 按 歌曲名 - 歌手 格式分割标题，分离出歌曲名和歌手
-                    if (song.getMusicName().contains("-")) {
-                        String[] str = song.getMusicName().split("-");
-                        song.setArtist(str[0].trim());
-                        song.setMusicName(str[1].replace(".mp3", "").trim());
+                    // 如果歌曲名中包含 “-” 则是复合歌手名
+                    if (song.getArtist().equals("<unknown>")) {
+                        //如果获取不到歌手名 就去拆分歌曲名
+                        if (song.getMusicName().contains("-")) {
+                            //按 - 标记拆分成两串字符串
+                            String[] str = song.getMusicName().split("-");
+                            song.setArtist(str[0].trim());
+                            song.setMusicName(str[1].trim());
+                        }else if (song.getMusicName().contains("_")){
+                            String[] str = song.getMusicName().split("_");
+                            for (int i = 0; i < str.length; i++){
+                                if (str[i].equals(song.getArtist())){
+                                    if (i == 0){
+                                        song.setMusicName(str[1]);
+                                    }else if (i == 1){
+                                        song.setMusicName(str[0]);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (song.getMusicName().contains("-")) {
+                            String[] str = song.getMusicName().split("-");
+                            if (str[0].trim().equals(song.getArtist())) {
+                                song.setMusicName(str[1].trim());
+                            } else {
+                                song.setMusicName(str[0].trim());
+                            }
+                        }else if (song.getMusicName().contains("_")){
+                            String[] str = song.getMusicName().split("_");
+                            for (int i = 0; i < str.length; i++){
+                                if (str[i].equals(song.getArtist())){
+                                    if (i == 0){
+                                        song.setMusicName(str[1]);
+                                    }else if (i == 1){
+                                        song.setMusicName(str[0]);
+                                    }
+                                }
+                            }
+                        }
                     }
 
+                    //除去末尾的文件格式后缀
                     if (song.getMusicName().contains(".mp3")) {
                         song.setMusicName(song.getMusicName().replace(".mp3", "").trim());
                     }
@@ -171,7 +218,7 @@ public class PlayMusicService extends Service {
 
     //选择音乐
     public void selectMusic(int index) {
-        if (mCurrIndex == index)return;
+        if (mCurrIndex == index) return;
         mCurrIndex = index;
         try {
             mediaPlayer.reset();
@@ -184,9 +231,9 @@ public class PlayMusicService extends Service {
 
     //上一首
     public int lastMusic() {
-        if (mMode == MODE.RANDOM_LOOP){
+        if (mMode == MODE.RANDOM_LOOP) {
             randomNextMusic();
-        }else {
+        } else {
             try {
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() - 1 : --mCurrIndex).getPath());
@@ -201,9 +248,9 @@ public class PlayMusicService extends Service {
 
     //下一首
     public int nextMusic() {
-        if (mMode == MODE.RANDOM_LOOP){
+        if (mMode == MODE.RANDOM_LOOP) {
             randomNextMusic();
-        }else {
+        } else {
             try {
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == musicDatas.size() - 1 ? 0 : ++mCurrIndex).getPath());
@@ -217,10 +264,12 @@ public class PlayMusicService extends Service {
     }
 
     private void prepareMediaPlayer() throws IOException {
-        mediaPlayer.prepare();
-        mediaPlayer.start();
-        musicPlayListener.NewPlay(musicDatas.get(mCurrIndex).getMusicName(), musicDatas.get(mCurrIndex).getArtist());
-        startTimeCount(mediaPlayer);
+        if (musicDatas.size() > 0){
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            musicPlayListener.NewPlay(musicDatas.get(mCurrIndex).getMusicName(), musicDatas.get(mCurrIndex).getArtist());
+            startTimeCount(mediaPlayer);
+        }
     }
 
     //暂停
@@ -238,7 +287,7 @@ public class PlayMusicService extends Service {
     //设置播放模式
     public void setPlayMode(MODE mode) {
         mMode = mode;
-        if (mMode == MODE.RANDOM_LOOP){
+        if (mMode == MODE.RANDOM_LOOP) {
             randomIndexList.clear();
             randomIndexList.add(mCurrIndex);
         }
@@ -297,4 +346,98 @@ public class PlayMusicService extends Service {
         super.onDestroy();
         mediaPlayer.release();
     }
+
+    public static final int MIN_SEND_GAP = 80;
+    Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
+        Util.Gap gapController = new Util.Gap(MIN_SEND_GAP);
+
+        private float fftPoints[] = null;
+
+        public void updateDBData(byte[] data) {
+            int[] dbData = null;
+            int division = 10;
+            int height = 10;
+            int skipStep = (data.length > 256 ? (data.length / 256) : 1);
+            if (fftPoints == null || fftPoints.length < data.length * 4) {
+                fftPoints = new float[ data.length * 4 ];
+            }
+
+            int length = data.length / division;
+            dbData = new int[ length ];
+            for (int i = 0 ; i < length ; i += skipStep) {
+                fftPoints[ i * 4 ] = i * 4 * division;
+                fftPoints[ i * 4 + 2 ] = i * 4 * division;
+                byte rfk = data[ division * i ];
+                byte ifk = data[ division * i + 1 ];
+                float magnitude = (rfk * rfk + ifk * ifk);
+                int dbValue = (int) (10 * Math.log10(magnitude));
+                dbData[ i ] = dbValue;
+                fftPoints[ i * 4 + 1 ] = height;
+                fftPoints[ i * 4 + 3 ] = height - (dbValue * 2 - 10);
+            }
+
+            if (musicFFTListener != null) {
+                musicFFTListener.onFFTDataRefresh(fftPoints, dbData);
+            }
+        }
+
+        @Override
+        public void onWaveFormDataCapture(Visualizer arg0, byte[] data, int arg2) {
+            if (gapController.passedNext())
+                updateDBData(data);
+        }
+
+        @Override
+        public void onFftDataCapture(Visualizer arg0, byte[] data, int arg2) {
+            // No data can received here...
+            // if (gapController.passedNext() && CoreData.currGroup().groupItemCnt() > 0)
+            // updateDBData(data);
+        }
+    };
+
+    public interface IMusicFFTListener {
+        public void onFFTDataRefresh(float[] data, int[] dbData);
+    }
+
+    private IMusicFFTListener musicFFTListener = new IMusicFFTListener() {
+        private AudioParser parser = new AudioParser();
+
+        private int count = 0;
+        private long lastTime = 0;
+
+        @Override
+        public void onFFTDataRefresh(final float[] data, final int[] dbData) {
+//            Log.i(TAG, "Music Recorder new data:" + dbData);
+            {
+                double db = 0;
+                for (int x : dbData)
+                    db += x;
+
+                // final double dbRet = Math.log10(db / dbData.length);
+                final double dbRet = db / dbData.length;
+
+                final Util.UIColor c = parser.CalcHSBByDB(dbRet);
+                //sendMsg.sendCommand(MusicFragment.mDeviceAddress, SysConfig.DEVICECOLOR, c);
+                //Log.i(TAG, "DB -> RGB: " + dbRet + " -> " + c);
+//                TaskPool.DefTaskPool().PushTask(new Runnable() {
+//                public void run() {
+//                    if (musicPlayListener != null)
+//                        musicPlayListener.NewDBValue(dbRet);
+
+                    //Log.i(TAG, "DB -> RGB: " + dbRet + " -> " + c);
+//                }
+//            });
+                count++;
+                long cur = System.currentTimeMillis();
+
+                if (cur - lastTime > 1000) {
+                    Log.i("MUSIC", "count:" + count + ", time:" + (cur - lastTime));
+                    count = 0;
+                    lastTime = cur;
+                }
+
+            }
+        }
+
+    };
 }

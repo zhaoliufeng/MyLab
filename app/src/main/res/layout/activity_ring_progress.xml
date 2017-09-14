@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBrown"
+    android:background="#152535"
     tools:context="me.zhaoliufeng.mylab.RingProgressActivity">
 
-    <me.zhaoliufeng.customviews.RingProgressBar
+    <me.zhaoliufeng.customviews.OTAProgressBar
         android:layout_gravity="center"
-        android:layout_width="200dp"
-        android:layout_height="200dp" />
+        android:layout_width="250dp"
+        android:layout_height="300dp" />
 
 </FrameLayout>

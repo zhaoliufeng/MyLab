@@ -36,4 +36,8 @@ public class LabActivity extends AppCompatActivity {
     public void musicOnClick(View view) {
         startActivity(new Intent(this, MusicPlayActivity.class));
     }
+
+    public void bleOnClick(View view) {
+        startActivity(new Intent(this, BleActivity.class));
+    }
 }

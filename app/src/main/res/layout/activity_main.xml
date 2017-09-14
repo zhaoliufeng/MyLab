@@ -117,6 +117,14 @@
                 android:text="扫描WIFI"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:layout_margin="5dp"
+                android:onClick="appOnClick"
+                android:text="App跳转"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <Button
                 android:layout_margin="5dp"
                 android:onClick="labOnClick"

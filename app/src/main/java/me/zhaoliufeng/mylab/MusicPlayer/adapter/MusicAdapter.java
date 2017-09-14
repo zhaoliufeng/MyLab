@@ -1,6 +1,7 @@
 package me.zhaoliufeng.mylab.MusicPlayer.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,13 +40,14 @@ public class MusicAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final MusicHolder viewHolder = (MusicHolder) holder;
-        viewHolder.mTvId.setText(String.valueOf(position + 1));
         viewHolder.mTvMusicName.setText(datas.get(position).getMusicName());
         viewHolder.mTvSinger.setText(datas.get(position).getArtist());
         if (position == selectItem){
-            viewHolder.mLlayoutItemBg.setBackgroundResource(R.color.colorLightGray);
+            viewHolder.mTvMusicName.setTextColor(Color.parseColor("#FF00CEFC"));
+            viewHolder.mTvSinger.setTextColor(Color.parseColor("#109DC0"));
         }else {
-            viewHolder.mLlayoutItemBg.setBackgroundResource(R.color.colorWhite);
+            viewHolder.mTvMusicName.setTextColor(Color.parseColor("#FFFFFFFF"));
+            viewHolder.mTvSinger.setTextColor(Color.parseColor("#A9A0B3"));
         }
         viewHolder.mLlayoutItemBg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +72,7 @@ public class MusicAdapter extends RecyclerView.Adapter {
 
     private class MusicHolder extends RecyclerView.ViewHolder{
 
-        private TextView mTvMusicName, mTvSinger, mTvId;
+        private TextView mTvMusicName, mTvSinger;
         private LinearLayout mLlayoutItemBg;
 
         MusicHolder(View itemView) {
@@ -78,7 +80,6 @@ public class MusicAdapter extends RecyclerView.Adapter {
             mLlayoutItemBg = (LinearLayout) itemView.findViewById(R.id.llayout_item_bg);
             mTvMusicName = (TextView) itemView.findViewById(R.id.tv_item_music_name);
             mTvSinger = (TextView) itemView.findViewById(R.id.tv_item_singer);
-            mTvId = (TextView) itemView.findViewById(R.id.tv_item_id);
         }
     }
 
