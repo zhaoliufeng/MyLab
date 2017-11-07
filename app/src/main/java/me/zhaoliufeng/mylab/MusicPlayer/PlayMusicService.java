@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import me.zhaoliufeng.customviews.Spectrograph;
 import me.zhaoliufeng.mylab.MusicPlayer.bean.Song;
 
 public class PlayMusicService extends Service {
@@ -35,7 +36,8 @@ public class PlayMusicService extends Service {
     private IMusicPlayListener musicPlayListener = new IMusicPlayListener();
     private MODE mMode = MODE.LIST_LOOP;
     private List<Integer> randomIndexList = new ArrayList<>();
-
+    private Visualizer visualizer;
+    public Spectrograph spectrograph;
     //播放模式
     enum MODE {
         LIST_LOOP,//列表循环
@@ -58,6 +60,13 @@ public class PlayMusicService extends Service {
         binder = new PlayBinder();
         mediaPlayer = new MediaPlayer();
         initListener();
+
+        visualizer = new Visualizer(mediaPlayer.getAudioSessionId());
+        visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+
+        visualizer.setDataCaptureListener(captureListener,
+                Visualizer.getMaxCaptureRate() / 2, false, true);
+        visualizer.setEnabled(true);
     }
 
     private void initListener() {
@@ -100,7 +109,7 @@ public class PlayMusicService extends Service {
         mCurrIndex = randomIndex;
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex).getPath());
+            mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
             prepareMediaPlayer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,7 +122,7 @@ public class PlayMusicService extends Service {
     private void singleMusic(){
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(getMusicData().get(mCurrIndex).getPath());
+            mediaPlayer.setDataSource(musicDatas.get(mCurrIndex).getPath());
             prepareMediaPlayer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -158,7 +167,7 @@ public class PlayMusicService extends Service {
                 song.setPath(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)));
                 song.setDuration(cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)));
                 song.setSize(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)));
-                if (song.getSize() > 1000 * 800) {
+                if (song.getSize() > 1000 * 100) {
                     // 按 歌曲名 - 歌手 格式分割标题，分离出歌曲名和歌手
                     // 如果歌曲名中包含 “-” 则是复合歌手名
                     if (song.getArtist().equals("<unknown>")) {
@@ -236,7 +245,7 @@ public class PlayMusicService extends Service {
         } else {
             try {
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() - 1 : --mCurrIndex).getPath());
+                mediaPlayer.setDataSource(musicDatas.get(mCurrIndex = mCurrIndex == 0 ? musicDatas.size() - 1 : --mCurrIndex).getPath());
                 prepareMediaPlayer();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -253,7 +262,7 @@ public class PlayMusicService extends Service {
         } else {
             try {
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource(getMusicData().get(mCurrIndex = mCurrIndex == musicDatas.size() - 1 ? 0 : ++mCurrIndex).getPath());
+                mediaPlayer.setDataSource(musicDatas.get(mCurrIndex = mCurrIndex == musicDatas.size() - 1 ? 0 : ++mCurrIndex).getPath());
                 prepareMediaPlayer();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -352,92 +361,16 @@ public class PlayMusicService extends Service {
         Util.Gap gapController = new Util.Gap(MIN_SEND_GAP);
 
         private float fftPoints[] = null;
-
-        public void updateDBData(byte[] data) {
-            int[] dbData = null;
-            int division = 10;
-            int height = 10;
-            int skipStep = (data.length > 256 ? (data.length / 256) : 1);
-            if (fftPoints == null || fftPoints.length < data.length * 4) {
-                fftPoints = new float[ data.length * 4 ];
-            }
-
-            int length = data.length / division;
-            dbData = new int[ length ];
-            for (int i = 0 ; i < length ; i += skipStep) {
-                fftPoints[ i * 4 ] = i * 4 * division;
-                fftPoints[ i * 4 + 2 ] = i * 4 * division;
-                byte rfk = data[ division * i ];
-                byte ifk = data[ division * i + 1 ];
-                float magnitude = (rfk * rfk + ifk * ifk);
-                int dbValue = (int) (10 * Math.log10(magnitude));
-                dbData[ i ] = dbValue;
-                fftPoints[ i * 4 + 1 ] = height;
-                fftPoints[ i * 4 + 3 ] = height - (dbValue * 2 - 10);
-            }
-
-            if (musicFFTListener != null) {
-                musicFFTListener.onFFTDataRefresh(fftPoints, dbData);
-            }
-        }
-
         @Override
         public void onWaveFormDataCapture(Visualizer arg0, byte[] data, int arg2) {
-            if (gapController.passedNext())
-                updateDBData(data);
+
         }
 
         @Override
         public void onFftDataCapture(Visualizer arg0, byte[] data, int arg2) {
-            // No data can received here...
-            // if (gapController.passedNext() && CoreData.currGroup().groupItemCnt() > 0)
-            // updateDBData(data);
-        }
-    };
-
-    public interface IMusicFFTListener {
-        public void onFFTDataRefresh(float[] data, int[] dbData);
-    }
-
-    private IMusicFFTListener musicFFTListener = new IMusicFFTListener() {
-        private AudioParser parser = new AudioParser();
-
-        private int count = 0;
-        private long lastTime = 0;
-
-        @Override
-        public void onFFTDataRefresh(final float[] data, final int[] dbData) {
-//            Log.i(TAG, "Music Recorder new data:" + dbData);
-            {
-                double db = 0;
-                for (int x : dbData)
-                    db += x;
-
-                // final double dbRet = Math.log10(db / dbData.length);
-                final double dbRet = db / dbData.length;
-
-                final Util.UIColor c = parser.CalcHSBByDB(dbRet);
-                //sendMsg.sendCommand(MusicFragment.mDeviceAddress, SysConfig.DEVICECOLOR, c);
-                //Log.i(TAG, "DB -> RGB: " + dbRet + " -> " + c);
-//                TaskPool.DefTaskPool().PushTask(new Runnable() {
-//                public void run() {
-//                    if (musicPlayListener != null)
-//                        musicPlayListener.NewDBValue(dbRet);
-
-                    //Log.i(TAG, "DB -> RGB: " + dbRet + " -> " + c);
-//                }
-//            });
-                count++;
-                long cur = System.currentTimeMillis();
-
-                if (cur - lastTime > 1000) {
-                    Log.i("MUSIC", "count:" + count + ", time:" + (cur - lastTime));
-                    count = 0;
-                    lastTime = cur;
-                }
-
+            if (spectrograph != null){
+                spectrograph.setData(data);
             }
         }
-
     };
 }

@@ -3,6 +3,8 @@
     package="me.zhaoliufeng.mylab">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -46,7 +48,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".RingProgressActivity" />
         <activity android:name=".WifiScanActivity" />
-
+        <activity android:name=".PermissionsActivity"/>
         <service
             android:name=".MusicPlayer.PlayMusicService"
             android:enabled="true"

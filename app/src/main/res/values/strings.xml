@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyLab</string>
+    <string name="app_name">AndroidLab</string>
     <string name="title_activity_ring_color_picker">RingColorPickerActivity</string>
     <string name="title_activity_music_paly">MusicPalyActivity</string>
 </resources>

@@ -3,12 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MyLab.iml" filepath="$PROJECT_DIR$/MyLab.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MyLab.iml" filepath="$PROJECT_DIR$/MyLab.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/customviews/customviews.iml" filepath="$PROJECT_DIR$/customviews/customviews.iml" />
-      <module fileurl="file://$PROJECT_DIR$/customviews/customviews.iml" filepath="$PROJECT_DIR$/customviews/customviews.iml" />
-      <module fileurl="file://$PROJECT_DIR$/toolslib/toolslib.iml" filepath="$PROJECT_DIR$/toolslib/toolslib.iml" />
       <module fileurl="file://$PROJECT_DIR$/toolslib/toolslib.iml" filepath="$PROJECT_DIR$/toolslib/toolslib.iml" />
     </modules>
   </component>

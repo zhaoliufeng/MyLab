@@ -33,6 +33,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.zhaoliufeng.customviews.RingProgressBar;
+import me.zhaoliufeng.customviews.Spectrograph;
 import me.zhaoliufeng.mylab.MusicPlayer.adapter.MusicAdapter;
 import me.zhaoliufeng.mylab.MusicPlayer.bean.Song;
 import me.zhaoliufeng.mylab.R;
@@ -50,6 +51,7 @@ public class MusicPlayActivity extends AppCompatActivity {
     private RingProgressBar progressBar;
     private MusicAdapter musicAdapter;
     private ImageView mBtnPause;
+    private Spectrograph spectrograph;
     //音乐列表数组
     private List<Song> musicDatas;
     private PlayMusicService musicService;
@@ -109,6 +111,7 @@ public class MusicPlayActivity extends AppCompatActivity {
         mTvMusicNum = (TextView) findViewById(R.id.tv_music_num);
         mLayoutList = (LinearLayout) findViewById(R.id.llayout_list);
         maskView = findViewById(R.id.view_mask);
+        spectrograph = (Spectrograph) findViewById(R.id.spectrograph);
 
         maskView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,6 +232,7 @@ public class MusicPlayActivity extends AppCompatActivity {
             //连接之后开始查找音乐
             musicService = ((PlayMusicService.PlayBinder) service).getService();
             musicService.setMusicPlayListener(MusicPlayActivity.this.musicPlayListener);
+            musicService.spectrograph = spectrograph;
 
             musicDatas = musicService.getMusicData();
             mTvMusicNum.setText(musicDatas.size() + "首");

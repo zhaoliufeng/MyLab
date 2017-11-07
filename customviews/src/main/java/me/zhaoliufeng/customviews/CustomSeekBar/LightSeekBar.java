@@ -1,6 +1,7 @@
 package me.zhaoliufeng.customviews.CustomSeekBar;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,6 +11,7 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -30,6 +32,8 @@ public class LightSeekBar extends View {
     private int mWidth;
     private int mHeight;
 
+    //矩形寬度
+    private int mRectWidth;
     private int mRadius;
     private float mStartY;
     private float mEndY;
@@ -44,6 +48,7 @@ public class LightSeekBar extends View {
     public LightSeekBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
+        setPosition(50);
     }
 
     private void init(){
@@ -77,22 +82,33 @@ public class LightSeekBar extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         mWidth = w;
         mHeight = h;
-        mSunPic = zoomImg(mSunPic, w, 0);
+        mSunPic = zoomImg(mSunPic, dp2px(22), 0);
 
-        mCurrY = mStartY = h - mRadius - 20;
-        mEndY = mSunPic.getHeight() + mRadius + 20;
-        mRadius = mWidth/2 - 2;
+        mRadius = (int) (dp2px(20)/3f);
+        mRectWidth = (int) (dp2px(15)/3f);
+        mCurrY = mStartY = h - mRadius;
+        mEndY = mSunPic.getHeight() + mRadius;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                Resources.getSystem().getDisplayMetrics());
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         //画太阳
-        canvas.drawBitmap(mSunPic, 0, 0, null);
+        canvas.drawBitmap(mSunPic, mWidth/2 - mSunPic.getWidth()/2, 0, null);
         //画背景矩形
-        canvas.drawRect(10, mSunPic.getHeight() + 10, mWidth - 10, mHeight - 10, mNormalRectPaint);
+        canvas.drawRect(mWidth/2 - mRectWidth/2, mSunPic.getHeight() + 10, mWidth/2 + mRectWidth/2, mHeight - 10, mNormalRectPaint);
         //画选中矩形
-        canvas.drawRect(10, mCurrY, mWidth - 10, mHeight - 10, mSelectedRectPaint);
+        canvas.drawRect(mWidth/2 - mRectWidth/2, mCurrY, mWidth/2 + mRectWidth/2, mHeight - 10, mSelectedRectPaint);
         //画选中圆
         canvas.drawCircle(mWidth/2, mCurrY, mRadius, mCirclePaint);
         canvas.drawCircle(mWidth/2, mCurrY, mRadius, mFrameCirclePaint);
@@ -105,6 +121,7 @@ public class LightSeekBar extends View {
 
                 break;
             case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
                 if (event.getY() < mEndY) {
                     mCurrY = mEndY;
                 }else if (event.getY() > mStartY - mRadius){
@@ -114,11 +131,8 @@ public class LightSeekBar extends View {
                 }
                 Log.e("SeekBar", " " + Math.round(100 * (mStartY - mCurrY)/(mStartY - mEndY)));
                 if (mOnPositionChangedListener != null)
-                    mOnPositionChangedListener.onNewPosition(Math.round(100 * (mStartY - mCurrY)/(mStartY - mEndY)));
+                    mOnPositionChangedListener.onNewPosition(Math.round(100 * (mStartY - mCurrY)/(mStartY - mEndY)), event.getAction() == MotionEvent.ACTION_UP);
                 postInvalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-
                 break;
         }
         return true;
@@ -131,7 +145,7 @@ public class LightSeekBar extends View {
      * @param newHeight 新的高
      * @return 指定宽高的bitmap
      */
-    public static Bitmap zoomImg(Bitmap bm, int newWidth ,int newHeight){
+    public static Bitmap zoomImg(Bitmap bm, int newWidth , int newHeight){
         float scaleHeight;
         float scaleWidth;
         // 获得图片的宽高
@@ -180,6 +194,6 @@ public class LightSeekBar extends View {
     }
 
     public interface OnPositionChangedListener{
-        void onNewPosition(int position);
+        void onNewPosition(int position, boolean isUp);
     }
 }

@@ -148,4 +148,7 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
+    public void PermissionsOnClick(View view) {
+        startActivity(new Intent(this, PermissionsActivity.class));
+    }
 }

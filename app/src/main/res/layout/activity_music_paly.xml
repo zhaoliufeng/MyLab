@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="bottom"
         android:orientation="vertical">
 
         <LinearLayout
@@ -72,6 +73,12 @@
                 </LinearLayout>
 
             </FrameLayout>
+
+            <me.zhaoliufeng.customviews.Spectrograph
+                android:id="@+id/spectrograph"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="bottom" />
 
         </LinearLayout>
 
