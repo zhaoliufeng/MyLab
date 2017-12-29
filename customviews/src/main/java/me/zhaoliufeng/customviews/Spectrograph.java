@@ -20,9 +20,11 @@ public class Spectrograph extends View implements View.OnClickListener {
     private byte[] mData;
     private int mHeight, mWidth;
     private float mSingeWidth;
+    private int mSkipStep = 5;
     private final static float MAX_VALUE = 255f;
     private Paint mPaint;
     private boolean stopRecord = false;
+    private int[] mRgbwc = new int[5];
 
     public Spectrograph(Context context) {
         super(context);
@@ -53,34 +55,30 @@ public class Spectrograph extends View implements View.OnClickListener {
         super.onDraw(canvas);
         //绘制mData.length个矩形
         if (mData != null) {
-            int[] rgbwc = sysData(mData);
-            Log.i("MusicService",rgbwc[0]/4 +"  --  " + rgbwc[1]/4 + "  --  " +  rgbwc[2]/4);
-            Random random = new Random();
-
-            int s = random.nextInt(2)%(2+1);
-            rgbwc[s] = 0;
-            mPaint.setARGB(255, (int) (rgbwc[0]/3.5f), (int) (rgbwc[1]/3.5f), (int) (rgbwc[2]/3.5f));
-            for (int i = 0; i < mData.length; i++) {
-                canvas.drawRect(mSingeWidth * i, ((mData[i] + 128) / MAX_VALUE) * mHeight,
-                        mSingeWidth * i + mSingeWidth, mHeight, mPaint);
+            for (int i = 0, j = 0; i < mData.length; i += mSkipStep, j++) {
+                Log.i("music", "data : " + mData[i]);
+                if (i < mData.length)
+                    canvas.drawRect(mSingeWidth * j, ((mData[i] + 128) / MAX_VALUE) * mHeight,
+                            mSingeWidth * j + mSingeWidth, mHeight, mPaint);
             }
         }
-    }
-
-    public int[] sysData(byte[] data) {
-        int[] Val = new int[3];
-        for (int j = 0; j < 3; j++) {
-            for (int i = j * data.length / 3; i < (j + 1) * (data.length / 3); i++) {
-                Val[j] = Val[j] + (data[i] + 128);
-            }
-            Val[j] = Val[j] - 25435;
-        }
-        return Val;
     }
 
     public void setData(byte[] data) {
         this.mData = data;
-        this.mSingeWidth = mWidth / (float) data.length;
+        int index = 0;
+        mRgbwc = new int[5];
+        long sum = 0;
+//        for (int i = 0; i < mData.length; i += mSkipStep) {
+//            if (i < mData.length) {
+//                index = i / (data.length / 4);
+////                data[i] += 90;
+//                if (data[i] > 0)
+//                    mRgbwc[index] += data[i];
+//            }
+//        }
+        Log.i("rgbwc", "data : " + mRgbwc[0] + "  " + mRgbwc[1] + "  " + mRgbwc[2] + "  " + mRgbwc[3] + "  " + mRgbwc[4]);
+        this.mSingeWidth = mWidth / (float) data.length * mSkipStep;
         if (!stopRecord)
             postInvalidate();
     }

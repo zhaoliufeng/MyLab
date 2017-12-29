@@ -6,7 +6,7 @@
     android:background="#151514"
     tools:context="me.zhaoliufeng.mylab.ColorPicker.RingColorPickerActivity">
 
-    <me.zhaoliufeng.customviews.ViewColorPicker.RingColorPicker
+    <me.zhaoliufeng.customviews.ViewColorPicker.SceneColorPicker
         android:id="@+id/colorPicker"
         android:layout_gravity="center"
         android:layout_width="300dp"

@@ -3,11 +3,13 @@
     package="me.zhaoliufeng.mylab">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +17,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/Theme.Default.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +26,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".lab.WidgetProvider">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_provider" />
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="me.zhaoliufeng.mylab.lab.action.CLICK" />
+            </intent-filter>
+        </receiver>
         <activity android:name=".NumTextView.NumTextViewActivity" />
         <activity android:name=".ItemMask.ItemMaskActivity" />
         <activity android:name=".lab.ViewLocationActivity" />
@@ -32,7 +44,7 @@
         <activity android:name=".Chart.ChartActivity" />
         <activity android:name=".lab.LabActivity" />
         <activity android:name=".lab.ViewDrawApiActivity" />
-        <activity android:name=".lab.BleActivity"/>
+        <activity android:name=".lab.BleActivity" />
         <activity android:name=".DashBoardView.DashBoardActivity" />
         <activity android:name=".CustomButton.SwitchButtonActivity" />
         <activity android:name=".ColorPicker.ColorPickerActivity" />
@@ -48,11 +60,16 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".RingProgressActivity" />
         <activity android:name=".WifiScanActivity" />
-        <activity android:name=".PermissionsActivity"/>
+        <activity android:name=".PermissionsActivity" />
+        <activity android:name=".VideoActivity" />
+
         <service
             android:name=".MusicPlayer.PlayMusicService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <activity android:name=".APWifiActivity" />
+        <activity android:name=".lab.WidgetProvider"></activity>
     </application>
 
 </manifest>

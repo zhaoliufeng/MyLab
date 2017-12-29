@@ -151,4 +151,12 @@ public class MainActivity extends AppCompatActivity {
     public void PermissionsOnClick(View view) {
         startActivity(new Intent(this, PermissionsActivity.class));
     }
+
+    public void VideoOnClick(View view) {
+        startActivity(new Intent(this, VideoActivity.class));
+    }
+
+    public void APOnClick(View view) {
+        startActivity(new Intent(this, APWifiActivity.class));
+    }
 }

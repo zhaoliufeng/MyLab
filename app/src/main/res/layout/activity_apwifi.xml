@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="me.zhaoliufeng.mylab.APWifiActivity">
+
+    <EditText
+        android:id="@+id/edt_ap_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="TestAP"
+        android:hint="AP热点名称"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/edt_ap_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="123456789"
+        android:hint="AP热点密码"
+        android:textSize="14sp" />
+
+    <Button
+        android:layout_margin="1dp"
+        android:onClick="onOpenApClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="打开AP热点" />
+
+    <Button
+        android:layout_margin="1dp"
+        android:onClick="onCloseApClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="关闭AP热点" />
+
+    <Button
+        android:layout_margin="1dp"
+        android:onClick="onCheckStateClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="检查状态" />
+
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="当前状态" />
+</LinearLayout>

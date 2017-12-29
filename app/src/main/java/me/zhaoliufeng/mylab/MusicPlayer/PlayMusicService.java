@@ -65,7 +65,7 @@ public class PlayMusicService extends Service {
         visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
 
         visualizer.setDataCaptureListener(captureListener,
-                Visualizer.getMaxCaptureRate() / 2, false, true);
+                Visualizer.getMaxCaptureRate(), false, true);
         visualizer.setEnabled(true);
     }
 
