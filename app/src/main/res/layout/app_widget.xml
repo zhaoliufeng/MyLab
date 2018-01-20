@@ -11,10 +11,4 @@
         android:layout_height="110dp"
         android:src="@drawable/logo" />
 
-    <ImageView
-        android:id="@+id/img_circle"
-        android:src="@drawable/cirle_orange"
-        android:layout_width="110dp"
-        android:layout_height="110dp" />
-
 </LinearLayout>

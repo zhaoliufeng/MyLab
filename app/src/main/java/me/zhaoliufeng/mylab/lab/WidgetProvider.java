@@ -1,8 +1,10 @@
 package me.zhaoliufeng.mylab.lab;
 
+import android.app.LauncherActivity;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -23,17 +25,14 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.app_widget);
-        Intent intent = new Intent(CLICK_ACTION);
+        Intent intent = new Intent(context, LauncherActivity.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, R.id.img_logo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.img_logo, pendingIntent);
+        ComponentName myComponentName = new ComponentName(context, LauncherActivity.class);
+        AppWidgetManager myAppWidgetManager = AppWidgetManager.getInstance(context);
 
-        intent = new Intent(CLICK_CIRCLE_ACTION);
-        pendingIntent = PendingIntent.getBroadcast(context, R.id.img_circle, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.img_circle, pendingIntent);
+        myAppWidgetManager.updateAppWidget(myComponentName, remoteViews);
 
-        for (int appWidgetId : appWidgetIds) {
-            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
-        }
     }
 
     /**
@@ -45,10 +44,6 @@ public class WidgetProvider extends AppWidgetProvider {
 
         if (CLICK_ACTION.equals(intent.getAction())) {
             Toast.makeText(context, "hello!", Toast.LENGTH_SHORT).show();
-        }
-
-        if (CLICK_CIRCLE_ACTION.equals(intent.getAction())){
-            Toast.makeText(context, "circle!", Toast.LENGTH_SHORT).show();
         }
     }
 
