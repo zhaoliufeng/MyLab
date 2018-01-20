@@ -14,7 +14,7 @@ import me.zhaoliufeng.mylab.R;
 
 public class WidgetProvider extends AppWidgetProvider {
     public static final String CLICK_ACTION = "me.zhaoliufeng.mylab.lab.action.CLICK"; // 点击事件的广播ACTION
-
+    public static final String CLICK_CIRCLE_ACTION = "me.zhaoliufeng.mylab.lab.action.CIRCLE_CLICK";
     /**
      * 每次窗口小部件被更新都调用一次该方法
      */
@@ -26,6 +26,10 @@ public class WidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(CLICK_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, R.id.img_logo, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.img_logo, pendingIntent);
+
+        intent = new Intent(CLICK_CIRCLE_ACTION);
+        pendingIntent = PendingIntent.getBroadcast(context, R.id.img_circle, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.img_circle, pendingIntent);
 
         for (int appWidgetId : appWidgetIds) {
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
@@ -41,6 +45,10 @@ public class WidgetProvider extends AppWidgetProvider {
 
         if (CLICK_ACTION.equals(intent.getAction())) {
             Toast.makeText(context, "hello!", Toast.LENGTH_SHORT).show();
+        }
+
+        if (CLICK_CIRCLE_ACTION.equals(intent.getAction())){
+            Toast.makeText(context, "circle!", Toast.LENGTH_SHORT).show();
         }
     }
 

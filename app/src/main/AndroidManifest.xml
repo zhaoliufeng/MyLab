@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <application
+        android:name=".LabApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -69,7 +70,6 @@
             android:exported="true" />
 
         <activity android:name=".APWifiActivity" />
-        <activity android:name=".lab.WidgetProvider"></activity>
     </application>
 
 </manifest>
