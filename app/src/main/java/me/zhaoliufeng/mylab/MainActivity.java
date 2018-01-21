@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,13 +31,23 @@ import me.zhaoliufeng.mylab.lab.LabActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    Button btn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        btn = (Button) findViewById(R.id.btn_click);
+        String action = getIntent().getAction();
+        System.out.println(action);
+        if (action.equals("AAA")) {
+            btn.performClick();
+        }
     }
 
-    /**数字增长动画控件*/
+    /**
+     * 数字增长动画控件
+     */
     public void numTextViewOnClick(View view) {
         startActivity(new Intent(this, NumTextViewActivity.class));
     }
@@ -102,15 +113,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void appOnClick(View view) {
-       // try {
+        // try {
 //            PackageInfo packageInfo=getPackageManager().getPackageInfo("com.curi.medialab.poopoo", 0);
 //            ComponentName comp = new ComponentName("com.curi.medialab.poopoo","com.curi.medialab.poopoo.LoginActivity");
-            PackageManager packageManager = getPackageManager();
-            Intent intent = packageManager.getLaunchIntentForPackage("com.curi.medialab.poopoo");
+        PackageManager packageManager = getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage("com.curi.medialab.poopoo");
 //            Intent intent=new Intent();
 //            intent.setComponent(comp);
-            intent.setAction("android.intent.action.VIEW");
-            startActivity(intent);
+        intent.setAction("android.intent.action.VIEW");
+        startActivity(intent);
 //        } catch (PackageManager.NameNotFoundException e) {
 //            //没有安装该程序
 //            Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -121,12 +132,12 @@ public class MainActivity extends AppCompatActivity {
 //        }
     }
 
-    private File APK_DIR = new File(Environment.getExternalStorageDirectory().toString()+"/APK");
+    private File APK_DIR = new File(Environment.getExternalStorageDirectory().toString() + "/APK");
 
-    private File copyApkFromAssets(String apkName){
+    private File copyApkFromAssets(String apkName) {
         File f = null;
         try {
-            if(!APK_DIR.exists()){
+            if (!APK_DIR.exists()) {
                 APK_DIR.mkdirs();
             }
             InputStream is = getAssets().open(apkName);
@@ -135,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             FileOutputStream fos = new FileOutputStream(f);
             byte[] buffer = new byte[1024];
             int len = 0;
-            while((len=is.read(buffer))!=-1){
+            while ((len = is.read(buffer)) != -1) {
                 fos.write(buffer, 0, len);
             }
             fos.flush();

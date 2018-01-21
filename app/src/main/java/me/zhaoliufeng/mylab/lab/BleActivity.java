@@ -167,6 +167,7 @@ public class BleActivity extends Activity {
                 }else {
                     Log.i("Scan Device", "Fail");
                 }
+
             }
         }
     }

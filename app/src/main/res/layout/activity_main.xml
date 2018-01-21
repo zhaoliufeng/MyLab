@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <Button
+                android:id="@+id/btn_click"
                 android:layout_margin="5dp"
                 android:onClick="numTextViewOnClick"
                 android:text="数字增长控件"

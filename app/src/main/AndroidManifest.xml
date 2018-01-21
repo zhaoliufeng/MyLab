@@ -34,7 +34,6 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="me.zhaoliufeng.mylab.lab.action.CLICK" />
-                <action android:name="me.zhaoliufeng.mylab.lab.action.CIRCLE_CLICK" />
             </intent-filter>
         </receiver>
         <activity android:name=".NumTextView.NumTextViewActivity" />
